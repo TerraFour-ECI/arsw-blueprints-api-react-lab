@@ -1,6 +1,6 @@
 import '@testing-library/jest-dom'
 
-// ---- Canvas mock para jsdom ----
+// ---- Canvas mock for jsdom ----
 if (!HTMLCanvasElement.prototype.getContext) {
   HTMLCanvasElement.prototype.getContext = () => {
     const noop = () => {}

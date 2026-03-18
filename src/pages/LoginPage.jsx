@@ -12,9 +12,9 @@ export default function LoginPage() {
     try {
       const { data } = await api.post('/auth/login', { username, password })
       localStorage.setItem('token', data.token)
-      alert('Login exitoso')
+      alert('Login successful')
     } catch (e) {
-      setError('Credenciales inválidas o servidor no disponible')
+      setError('Invalid credentials or server unavailable')
     }
   }
 
@@ -23,11 +23,11 @@ export default function LoginPage() {
       <h2 style={{ marginTop: 0 }}>Login</h2>
       <div className="grid cols-2">
         <div>
-          <label>Usuario</label>
+          <label>Username</label>
           <input className="input" value={username} onChange={(e) => setUsername(e.target.value)} />
         </div>
         <div>
-          <label>Contraseña</label>
+          <label>Password</label>
           <input
             type="password"
             className="input"
@@ -38,7 +38,7 @@ export default function LoginPage() {
       </div>
       {error && <p style={{ color: '#f87171' }}>{error}</p>}
       <button className="btn primary" style={{ marginTop: 12 }}>
-        Ingresar
+        Sign in
       </button>
     </form>
   )
