@@ -15,7 +15,7 @@ export default function BlueprintDetailPage() {
   if (!bp)
     return (
       <div className="card">
-        <p>Cargando...</p>
+        <p>Loading...</p>
       </div>
     )
 
@@ -23,10 +23,10 @@ export default function BlueprintDetailPage() {
     <div className="card">
       <h2 style={{ marginTop: 0 }}>{bp.name}</h2>
       <p>
-        <strong>Autor:</strong> {bp.author}
+        <strong>Author:</strong> {bp.author}
       </p>
       <p>
-        <strong>Puntos:</strong> {bp.points?.length || 0}
+        <strong>Points:</strong> {bp.points?.length || 0}
       </p>
       <svg width="400" height="200" style={{ background: '#0b1220', borderRadius: 12 }}>
         {bp.points?.map((p, i) => (

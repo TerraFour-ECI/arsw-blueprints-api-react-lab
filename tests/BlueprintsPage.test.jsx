@@ -4,7 +4,7 @@ import { Provider } from 'react-redux'
 import { configureStore, createSlice } from '@reduxjs/toolkit'
 import BlueprintsPage from '../src/pages/BlueprintsPage.jsx'
 
-// Mock de thunks del slice para no requerir backend
+// Mock slice thunks so the test does not require a backend
 vi.mock('../src/features/blueprints/blueprintsSlice.js', () => ({
   fetchAuthors: () => ({ type: 'blueprints/fetchAuthors' }),
   fetchByAuthor: (author) => ({ type: 'blueprints/fetchByAuthor', payload: author }),
@@ -28,7 +28,7 @@ function makeStore(preloaded) {
 }
 
 describe('BlueprintsPage', () => {
-  it('despacha fetchByAuthor al hacer click en Get blueprints', () => {
+  it('dispatches fetchByAuthor when clicking Get blueprints', () => {
     const store = makeStore()
     const spy = vi.spyOn(store, 'dispatch')
     render(

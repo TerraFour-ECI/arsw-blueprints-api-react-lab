@@ -1,12 +1,12 @@
-// eslint.config.js (Flat Config para ESLint v9)
+// eslint.config.js (Flat Config for ESLint v9)
 import globals from 'globals'
 import pluginReact from 'eslint-plugin-react'
 
 export default [
-  // Ignorar carpetas de build y dependencias
+  // Ignore build and dependency folders
   { ignores: ['dist/**', 'build/**', 'node_modules/**'] },
 
-  // Reglas para el código de la app
+  // Rules for app source code
   {
     files: ['**/*.{js,jsx}'],
     languageOptions: {
@@ -18,12 +18,12 @@ export default [
     plugins: { react: pluginReact },
     rules: {
       'react/prop-types': 'off',
-      'react/react-in-jsx-scope': 'off', // React 17+ (Vite) no requiere import React
+      'react/react-in-jsx-scope': 'off', // React 17+ (Vite) does not require importing React
     },
     settings: { react: { version: 'detect' } },
   },
 
-  // Reglas/escope para tests (Vitest + jsdom)
+  // Rules/scope for tests (Vitest + jsdom)
   {
     files: ['tests/**/*.{js,jsx}'],
     languageOptions: {
