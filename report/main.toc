@@ -1,0 +1,26 @@
+\babel@toc {english}{}\relax 
+\contentsline {section}{\numberline {1}Objective}{3}{section.1}%
+\contentsline {section}{\numberline {2}Technology Stack and Project Structure}{3}{section.2}%
+\contentsline {subsection}{\numberline {2.1}Stack Overview}{3}{subsection.2.1}%
+\contentsline {subsection}{\numberline {2.2}Directory Layout}{3}{subsection.2.2}%
+\contentsline {section}{\numberline {3}Architecture and Data Flow}{3}{section.3}%
+\contentsline {subsection}{\numberline {3.1}Frontend Architecture}{3}{subsection.3.1}%
+\contentsline {subsection}{\numberline {3.2}JWT Authentication Flow}{3}{subsection.3.2}%
+\contentsline {section}{\numberline {4}Functional Requirements Implementation}{3}{section.4}%
+\contentsline {subsection}{\numberline {4.1}Requirement 1: Canvas Rendering and Interaction}{3}{subsection.4.1}%
+\contentsline {subsection}{\numberline {4.2}Requirement 2: Author-Based Blueprint Listing}{4}{subsection.4.2}%
+\contentsline {subsection}{\numberline {4.3}Requirement 3: Open Blueprint and Update Canvas}{4}{subsection.4.3}%
+\contentsline {subsection}{\numberline {4.4}Requirement 4: Service Switching (Mock/API)}{4}{subsection.4.4}%
+\contentsline {subsection}{\numberline {4.5}Requirement 5: Redux-Driven UI State}{4}{subsection.4.5}%
+\contentsline {subsection}{\numberline {4.6}Requirement 6: UI/UX Styling}{4}{subsection.4.6}%
+\contentsline {subsection}{\numberline {4.7}Requirement 7: Testing and Quality}{5}{subsection.4.7}%
+\contentsline {section}{\numberline {5}Blueprint Create/Update Reliability Improvements}{5}{section.5}%
+\contentsline {section}{\numberline {6}Build, Scripts, and Tooling}{5}{section.6}%
+\contentsline {subsection}{\numberline {6.1}NPM Commands}{5}{subsection.6.1}%
+\contentsline {section}{\numberline {7}Quality Metrics}{6}{section.7}%
+\contentsline {section}{\numberline {8}Synthesis of Recommended Readings}{6}{section.8}%
+\contentsline {subsection}{\numberline {8.1}React Best Practices (freeCodeCamp)}{6}{subsection.8.1}%
+\contentsline {subsection}{\numberline {8.2}State Management in React (freeCodeCamp + Redux Toolkit article)}{6}{subsection.8.2}%
+\contentsline {subsection}{\numberline {8.3}Axios Interceptors Documentation}{6}{subsection.8.3}%
+\contentsline {section}{\numberline {9}Conclusions}{6}{section.9}%
+\contentsline {section}{\numberline {10}References}{7}{section.10}%
