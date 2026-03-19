@@ -28,10 +28,19 @@ export default function BlueprintForm({ onSubmit, isSubmitting = false }) {
         return
       }
 
-      await onSubmit({ author: author.trim(), name: name.trim(), points })
+      const normalizedPoints = points.map((pt, idx) => {
+        const x = Number(pt?.x)
+        const y = Number(pt?.y)
+        if (!Number.isFinite(x) || !Number.isFinite(y)) {
+          throw new TypeError(`Point at index ${idx} must include numeric x and y values.`)
+        }
+        return { x: Math.round(x), y: Math.round(y) }
+      })
+
+      await onSubmit({ author: author.trim(), name: name.trim(), points: normalizedPoints })
       resetForm()
     } catch (e) {
-      setError('Invalid points JSON.')
+      setError(e?.message || 'Invalid points JSON.')
     }
   }
 

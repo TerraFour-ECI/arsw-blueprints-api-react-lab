@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { MemoryRouter, Route, Routes } from 'react-router-dom'
 import LoginPage from '../src/pages/LoginPage.jsx'
 import api from '../src/services/apiClient.js'
 
@@ -19,7 +20,11 @@ describe('LoginPage', () => {
     api.post.mockResolvedValue({ data: { access_token: 'jwt-token' } })
     const alertSpy = vi.spyOn(window, 'alert').mockImplementation(() => {})
 
-    const { container } = render(<LoginPage />)
+    const { container } = render(
+      <MemoryRouter>
+        <LoginPage />
+      </MemoryRouter>,
+    )
 
     const [usernameInput, passwordInput] = container.querySelectorAll('input')
     fireEvent.change(usernameInput, { target: { value: 'camilo' } })
@@ -41,7 +46,11 @@ describe('LoginPage', () => {
   it('shows error message when login fails', async () => {
     api.post.mockRejectedValue(new Error('invalid credentials'))
 
-    const { container } = render(<LoginPage />)
+    const { container } = render(
+      <MemoryRouter>
+        <LoginPage />
+      </MemoryRouter>,
+    )
 
     const [usernameInput, passwordInput] = container.querySelectorAll('input')
     fireEvent.change(usernameInput, { target: { value: 'camilo' } })
@@ -60,7 +69,11 @@ describe('LoginPage', () => {
       .mockResolvedValueOnce({ data: { token: 'fallback-token' } })
 
     const alertSpy = vi.spyOn(window, 'alert').mockImplementation(() => {})
-    const { container } = render(<LoginPage />)
+    const { container } = render(
+      <MemoryRouter>
+        <LoginPage />
+      </MemoryRouter>,
+    )
 
     const [usernameInput, passwordInput] = container.querySelectorAll('input')
     fireEvent.change(usernameInput, { target: { value: 'student' } })
@@ -81,5 +94,40 @@ describe('LoginPage', () => {
     })
 
     alertSpy.mockRestore()
+  })
+
+  it('shows error when login response does not include token fields', async () => {
+    api.post.mockResolvedValue({ data: { token_type: 'Bearer' } })
+
+    const { container } = render(
+      <MemoryRouter>
+        <LoginPage />
+      </MemoryRouter>,
+    )
+
+    const [usernameInput, passwordInput] = container.querySelectorAll('input')
+    fireEvent.change(usernameInput, { target: { value: 'student' } })
+    fireEvent.change(passwordInput, { target: { value: 'student123' } })
+    fireEvent.click(screen.getByRole('button', { name: /Sign in/i }))
+
+    expect(
+      await screen.findByText(/Invalid credentials or server unavailable/i),
+    ).toBeInTheDocument()
+    expect(localStorage.getItem('token')).toBeNull()
+  })
+
+  it('redirects away from login when session token already exists', () => {
+    localStorage.setItem('token', 'jwt-token')
+
+    render(
+      <MemoryRouter initialEntries={['/login']}>
+        <Routes>
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/" element={<div>home page</div>} />
+        </Routes>
+      </MemoryRouter>,
+    )
+
+    expect(screen.getByText(/home page/i)).toBeInTheDocument()
   })
 })

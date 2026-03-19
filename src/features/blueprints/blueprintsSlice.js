@@ -3,13 +3,14 @@ import blueprintsService from '../../services/blueprintsService.js'
 
 export const fetchAuthors = createAsyncThunk('blueprints/fetchAuthors', async () => {
   const data = await blueprintsService.getAll()
-  const authors = [...new Set(data.map((bp) => bp.author))]
+  const items = Array.isArray(data) ? data : []
+  const authors = [...new Set(items.map((bp) => bp.author))]
   return authors
 })
 
 export const fetchByAuthor = createAsyncThunk('blueprints/fetchByAuthor', async (author) => {
   const data = await blueprintsService.getByAuthor(author)
-  return { author, items: data || [] }
+  return { author, items: Array.isArray(data) ? data : [] }
 })
 
 export const fetchBlueprint = createAsyncThunk(
@@ -20,10 +21,18 @@ export const fetchBlueprint = createAsyncThunk(
   },
 )
 
-export const createBlueprint = createAsyncThunk('blueprints/createBlueprint', async (payload) => {
-  const data = await blueprintsService.create(payload)
-  return data
-})
+export const createBlueprint = createAsyncThunk(
+  'blueprints/createBlueprint',
+  async (payload, { rejectWithValue }) => {
+    try {
+      const data = await blueprintsService.create(payload)
+      return data
+    } catch (error) {
+      const message = error?.response?.data?.message || error?.message || 'Unable to create blueprint'
+      return rejectWithValue(message)
+    }
+  },
+)
 
 export const updateBlueprint = createAsyncThunk(
   'blueprints/updateBlueprint',
@@ -117,7 +126,7 @@ const slice = createSlice({
       })
       .addCase(createBlueprint.rejected, (s, a) => {
         s.status = 'failed'
-        s.error = a.error.message || 'Unable to create blueprint'
+        s.error = a.payload || a.error.message || 'Unable to create blueprint'
       })
       .addCase(updateBlueprint.pending, (s) => {
         s.status = 'loading'

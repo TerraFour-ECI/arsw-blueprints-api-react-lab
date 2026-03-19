@@ -58,6 +58,8 @@ h3 {
 }
 
 .app-header {
+  position: relative;
+  z-index: 80;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -79,6 +81,64 @@ h3 {
   border: 1px solid var(--surface-border);
   background: rgba(255, 255, 255, 0.6);
   backdrop-filter: blur(8px);
+}
+.user-menu-wrap {
+  position: relative;
+  z-index: 90;
+}
+.user-menu-button {
+  border: 1px solid rgba(15, 23, 42, 0.18);
+  background: #e2e8f0;
+  color: #0f172a;
+  border-radius: 999px;
+  padding: 6px 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-weight: 700;
+}
+.user-avatar {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #0ea5a4;
+  color: white;
+  font-size: 12px;
+}
+.user-menu-popover {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 8px);
+  min-width: 180px;
+  background: #f8fafc;
+  border: 1px solid rgba(15, 23, 42, 0.12);
+  border-radius: 10px;
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.2);
+  display: grid;
+  padding: 8px;
+  z-index: 120;
+}
+.user-menu-popover a,
+.user-menu-logout {
+  border: none;
+  background: transparent;
+  text-align: left;
+  color: #0f172a;
+  text-decoration: none;
+  padding: 8px 10px;
+  border-radius: 6px;
+  font-size: 14px;
+}
+.user-menu-popover a:hover,
+.user-menu-logout:hover {
+  background: #e2e8f0;
+}
+.user-menu-logout {
+  cursor: pointer;
 }
 
 .main-nav a {

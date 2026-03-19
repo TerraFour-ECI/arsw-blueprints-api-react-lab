@@ -93,6 +93,17 @@ describe('blueprints slice', () => {
     expect(state.authors).toEqual(['john', 'maria'])
   })
 
+  it('fetchAuthors handles non-array payloads defensively', async () => {
+    blueprintsService.getAll.mockResolvedValue({ unexpected: true })
+    const store = makeStore()
+
+    await store.dispatch(fetchAuthors())
+
+    const state = store.getState().blueprints
+    expect(state.authors).toEqual([])
+    expect(state.status).toBe('succeeded')
+  })
+
   it('fetchByAuthor stores items keyed by author', async () => {
     blueprintsService.getByAuthor.mockResolvedValue([
       { author: 'john', name: 'house', points: [] },
@@ -106,6 +117,16 @@ describe('blueprints slice', () => {
     expect(state.status).toBe('succeeded')
     expect(state.byAuthor.john).toHaveLength(2)
     expect(state.authors).toContain('john')
+  })
+
+  it('fetchByAuthor stores empty list when payload is not an array', async () => {
+    blueprintsService.getByAuthor.mockResolvedValue({ wrapped: true })
+    const store = makeStore()
+
+    await store.dispatch(fetchByAuthor('john'))
+
+    const state = store.getState().blueprints
+    expect(state.byAuthor.john).toEqual([])
   })
 
   it('fetchBlueprint handles rejection and sets error', async () => {
@@ -315,5 +336,27 @@ describe('blueprints slice', () => {
     const state = store.getState().blueprints
     expect(state.status).toBe('failed')
     expect(state.error).toContain('delete failure')
+  })
+
+  it('uses default rejected messages when thunk error message is missing', () => {
+    const initial = reducer(undefined, { type: '@@INIT' })
+
+    let state = reducer(initial, { type: fetchAuthors.rejected.type, error: {} })
+    expect(state.error).toBe('Unable to load authors')
+
+    state = reducer(initial, { type: fetchByAuthor.rejected.type, error: {} })
+    expect(state.error).toBe('Unable to load blueprints for this author')
+
+    state = reducer(initial, { type: fetchBlueprint.rejected.type, error: {} })
+    expect(state.error).toBe('Unable to load blueprint details')
+
+    state = reducer(initial, { type: createBlueprint.rejected.type, error: {} })
+    expect(state.error).toBe('Unable to create blueprint')
+
+    state = reducer(initial, { type: updateBlueprint.rejected.type, error: {} })
+    expect(state.error).toBe('Unable to update blueprint')
+
+    state = reducer(initial, { type: deleteBlueprint.rejected.type, error: {} })
+    expect(state.error).toBe('Unable to delete blueprint')
   })
 })
