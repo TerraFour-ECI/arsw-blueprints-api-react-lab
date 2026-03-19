@@ -12,7 +12,14 @@ describe('BlueprintList', () => {
     const onSelect = vi.fn()
     const items = [
       { author: 'john', name: 'house', points: [{ x: 1, y: 1 }] },
-      { author: 'john', name: 'kite', points: [{ x: 2, y: 2 }, { x: 3, y: 3 }] },
+      {
+        author: 'john',
+        name: 'kite',
+        points: [
+          { x: 2, y: 2 },
+          { x: 3, y: 3 },
+        ],
+      },
     ]
 
     render(<BlueprintList items={items} onSelect={onSelect} />)
@@ -25,12 +32,7 @@ describe('BlueprintList', () => {
   })
 
   it('shows zero points when a blueprint has no points array', () => {
-    render(
-      <BlueprintList
-        items={[{ author: 'maria', name: 'bridge' }]}
-        onSelect={vi.fn()}
-      />,
-    )
+    render(<BlueprintList items={[{ author: 'maria', name: 'bridge' }]} onSelect={vi.fn()} />)
 
     expect(screen.getByText(/Points:/i)).toBeInTheDocument()
     expect(screen.getByText('0')).toBeInTheDocument()

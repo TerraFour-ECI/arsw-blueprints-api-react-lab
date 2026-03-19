@@ -30,7 +30,7 @@ export const updateBlueprint = createAsyncThunk(
   async ({ author, name, payload }) => {
     const data = await blueprintsService.update(author, name, payload)
     return data
-  }
+  },
 )
 
 export const deleteBlueprint = createAsyncThunk(
@@ -38,7 +38,7 @@ export const deleteBlueprint = createAsyncThunk(
   async ({ author, name }) => {
     await blueprintsService.remove(author, name)
     return { author, name }
-  }
+  },
 )
 
 const slice = createSlice({
@@ -53,10 +53,10 @@ const slice = createSlice({
   reducers: {
     addPointToCurrent(state, action) {
       if (state.current) {
-        if (!state.current.points) state.current.points = [];
-        state.current.points.push(action.payload);
+        if (!state.current.points) state.current.points = []
+        state.current.points.push(action.payload)
       }
-    }
+    },
   },
   extraReducers: (builder) => {
     builder

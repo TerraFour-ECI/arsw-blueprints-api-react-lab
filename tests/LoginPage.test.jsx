@@ -15,8 +15,8 @@ describe('LoginPage', () => {
     localStorage.clear()
   })
 
-  it('stores token and shows success alert after login', async () => {
-    api.post.mockResolvedValue({ data: { token: 'jwt-token' } })
+  it('stores access_token and shows success alert after login', async () => {
+    api.post.mockResolvedValue({ data: { access_token: 'jwt-token' } })
     const alertSpy = vi.spyOn(window, 'alert').mockImplementation(() => {})
 
     const { container } = render(<LoginPage />)
@@ -27,7 +27,7 @@ describe('LoginPage', () => {
     fireEvent.click(screen.getByRole('button', { name: /Sign in/i }))
 
     await waitFor(() => {
-      expect(api.post).toHaveBeenCalledWith('/auth/login', {
+      expect(api.post).toHaveBeenCalledWith('http://localhost:8080/auth/login', {
         username: 'camilo',
         password: 'password',
       })
@@ -48,7 +48,38 @@ describe('LoginPage', () => {
     fireEvent.change(passwordInput, { target: { value: 'wrong' } })
     fireEvent.click(screen.getByRole('button', { name: /Sign in/i }))
 
-    expect(await screen.findByText(/Invalid credentials or server unavailable/i)).toBeInTheDocument()
+    expect(
+      await screen.findByText(/Invalid credentials or server unavailable/i),
+    ).toBeInTheDocument()
     expect(localStorage.getItem('token')).toBeNull()
+  })
+
+  it('falls back to /auth/login when absolute auth endpoint returns 404', async () => {
+    api.post
+      .mockRejectedValueOnce({ response: { status: 404 } })
+      .mockResolvedValueOnce({ data: { token: 'fallback-token' } })
+
+    const alertSpy = vi.spyOn(window, 'alert').mockImplementation(() => {})
+    const { container } = render(<LoginPage />)
+
+    const [usernameInput, passwordInput] = container.querySelectorAll('input')
+    fireEvent.change(usernameInput, { target: { value: 'student' } })
+    fireEvent.change(passwordInput, { target: { value: 'student123' } })
+    fireEvent.click(screen.getByRole('button', { name: /Sign in/i }))
+
+    await waitFor(() => {
+      expect(api.post).toHaveBeenNthCalledWith(1, 'http://localhost:8080/auth/login', {
+        username: 'student',
+        password: 'student123',
+      })
+      expect(api.post).toHaveBeenNthCalledWith(2, '/auth/login', {
+        username: 'student',
+        password: 'student123',
+      })
+      expect(localStorage.getItem('token')).toBe('fallback-token')
+      expect(alertSpy).toHaveBeenCalledWith('Login successful')
+    })
+
+    alertSpy.mockRestore()
   })
 })
