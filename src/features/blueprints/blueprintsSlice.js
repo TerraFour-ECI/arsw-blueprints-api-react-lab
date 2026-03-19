@@ -28,7 +28,8 @@ export const createBlueprint = createAsyncThunk(
       const data = await blueprintsService.create(payload)
       return data
     } catch (error) {
-      const message = error?.response?.data?.message || error?.message || 'Unable to create blueprint'
+      const message =
+        error?.response?.data?.message || error?.message || 'Unable to create blueprint'
       return rejectWithValue(message)
     }
   },

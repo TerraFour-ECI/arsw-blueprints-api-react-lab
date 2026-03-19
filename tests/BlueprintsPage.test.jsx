@@ -157,7 +157,10 @@ describe('BlueprintsPage', () => {
       current: {
         author: 'john',
         name: 'house',
-        points: [{ x: 1, y: 2 }, { x: 3, y: 4 }],
+        points: [
+          { x: 1, y: 2 },
+          { x: 3, y: 4 },
+        ],
       },
     })
     render(

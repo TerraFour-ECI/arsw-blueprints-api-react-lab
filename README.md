@@ -131,11 +131,16 @@ blueprints-react-lab/
 - **Implementation:** Implemented within `BlueprintCanvas.jsx`. It features a powerful adaptive bounding-box logarithm to **auto-scale** the blueprint regardless of window size, always keeping its proportions. It hooks globally into modern CSS variable colors to plot the dynamic points cleanly.
 - 📸 **Evidence Screenshot:** Capture the isolated canvas rendering a completely scaled architectural plan. Save as `images/REQ1_CanvasDraw.png`.
 
+![alt text](images/REQ1_CanvasDraw.png)
+![alt text](images/REQ1_CanvasDraw-SuccessfulLogin.png)
+
 ### 2. 🗃️ List an Author's Blueprints
 
 - **Requirement:** Allow entering an author name and querying their blueprints. Show results in a table with name, points, and `Open` button.
 - **Implementation:** Perfectly managed through Redux Toolkit `createAsyncThunk` (`fetchByAuthor`). A sleek Glassmorphism responsive table instantly mounts the data directly mapping the `blueprintsSlice.js` states.
 - 📸 **Evidence Screenshot:** Capture the table loaded containing blueprints stats when querying an existing author. Save as `images/REQ2_AuthorBlueprintsTable.png`.
+
+![alt text](images/REQ2_AuthorBlueprintsTable.png)
 
 ### 3. 🖱️ Select a blueprint and plot it
 
@@ -143,11 +148,15 @@ blueprints-react-lab/
 - **Implementation:** Connects React elements (dispatching `fetchByAuthorAndName`) heavily into the Canvas lifecycle hooks inside `useEffect`. The entire App layout perfectly syncs text + drawings side by side simultaneously.
 - 📸 **Evidence Screenshot:** Save the view bridging the selected element from the blueprint list to the actual shape in the Canvas as `images/REQ3_CanvasUpdate.png`.
 
+![alt text](images/REQ3_CanvasUpdate.png)
+
 ### 4. 🔀 Services: `apimock` and `apiclient`
 
 - **Requirement:** Implement both services with same interface and switch them via `.env` in one line.
 - **Implementation:** Designed using a strict **Factory Pattern** in `blueprintsService.js` checking `import.meta.env.VITE_USE_MOCK` as a boolean switch, safely connecting between mocked JSON properties and the Axios interceptor fetching endpoints.
 - 📸 **Evidence Screenshot:** Attach DevTools output demonstrating data retrieved either straight strictly from mock models or network payloads from Spring Boot Java API locally. Save as `images/REQ4_ApiMockSwitch.png`.
+
+![alt text](images/REQ4_ApiMockSwitch.png)
 
 ### 5. ⚛️ React UI
 
@@ -155,17 +164,27 @@ blueprints-react-lab/
 - **Implementation:** Completed completely independent of bad DOM logic! Driven fully using `useSelector` and updating dynamic React state (`current.name` and functional reductions determining point sums).
 - 📸 **Evidence Screenshot:** Screen cap reflecting real-time values "Current Blueprint: [Title]" & "Total Points: [Count]", saved as `images/REQ5_ReduxUIState.png`.
 
+![alt text](images/REQ5_ReduxUIState.png)
+
 ### 6. 🎨 Styles
 
 - **Requirement:** Add styles to improve presentation comparing to reference mock.
 - **Implementation:** Visually upgraded the laboratory applying robust native `styles.css`. Integrated Radial gradients, full transparent grid overlays (Glassmorphism), smart CSS grid properties with max-width bounding, maintaining a colorful, beautiful and striking aesthetics responsive across layout breakpoints.
 - 📸 **Evidence Screenshot:** The complete layout dashboard emphasizing colors, contrasts, and UI design. Name it `images/REQ6_ColorfulUI.png`.
 
+![alt text](images/REQ6_ColorfulUI.png)
+![alt text](images/REQ6_ColorfulUI-profile.png)
+![alt text](images/REQ6_ColorfulUI-passwd.png)
+
 ### 7. ✅ Unit Tests
 
 - **Requirement:** Add tests with Vitest + Testing Library (Canvas render, forms, Redux).
 - **Implementation:** Solved testing crashes implementing `Object.defineProperty(HTMLCanvasElement.prototype, 'getContext')` mocks explicitly in `setup.js`. Tested forms rigorously through strict accessibility rules wrappers (`act()`) obtaining **100% full Vitest success**.
-- 📸 **Evidence Screenshot:** Your local terminal asserting passing pipelines executing `npm test` and `npm run lint`. Ensure no errors. Save as `images/REQ7_VitestSuccess.png`.
+- 📸 **Evidence Screenshot:** Your local terminal asserting passing pipelines executing `npm test`, `npm run lint` and `npm run coverage` . Ensure no errors. Save as `images/REQ7_VitestSuccess.png`.
+
+![alt text](images/REQ7_VitestSuccess-test.png)
+![alt text](images/REQ7_VitestSuccess-lint.png)
+![alt text](images/REQ7_VitestSuccess-coverage.png)
 
 ---
 
@@ -226,14 +245,14 @@ Expected validation outcome:
 
 ## 📍 Traceability to Evaluation Criteria
 
-| Evaluation Criterion                               | Evidence in this repository                                                                                                                                                    |
-| -------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Functionality and case coverage (30%)              | Implemented `GET/POST/PUT/DELETE`, interactive canvas point capture, protected routes, and author/blueprint queries in UI.                                                     |
-| Code quality and architecture (25%)                | Clear layering (`components/`, `features/`, `pages/`, `services/`, `store/`) with Redux Toolkit thunks and service abstraction (`apiclient`/`apimock`).                        |
-| State management, errors, UX (15%)                 | Loading and error states handled in slice/UI; success/error feedback messages for create/update/delete actions.                                                                |
+| Evaluation Criterion                               | Evidence in this repository                                                                                                                                                     |
+| -------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Functionality and case coverage (30%)              | Implemented `GET/POST/PUT/DELETE`, interactive canvas point capture, protected routes, and author/blueprint queries in UI.                                                      |
+| Code quality and architecture (25%)                | Clear layering (`components/`, `features/`, `pages/`, `services/`, `store/`) with Redux Toolkit thunks and service abstraction (`apiclient`/`apimock`).                         |
+| State management, errors, UX (15%)                 | Loading and error states handled in slice/UI; success/error feedback messages for create/update/delete actions.                                                                 |
 | Automated tests (15%)                              | 104 passing tests plus coverage report (`npm run coverage`) across routing, pages, forms, canvas, route-guard, redux slice, store, service mock, API client, and app bootstrap. |
-| Security (JWT/Interceptors/Protected Routes) (10%) | JWT persisted in `localStorage`, Axios request interceptor injects Bearer token, `PrivateRoute` blocks protected views without token.                                          |
-| CI/Lint/Format (5%)                                | ESLint and formatting scripts available; GitHub Actions workflow included for CI checks.                                                                                       |
+| Security (JWT/Interceptors/Protected Routes) (10%) | JWT persisted in `localStorage`, Axios request interceptor injects Bearer token, `PrivateRoute` blocks protected views without token.                                           |
+| CI/Lint/Format (5%)                                | ESLint and formatting scripts available; GitHub Actions workflow included for CI checks.                                                                                        |
 
 ## 📌 Recommendations and suggested activities for lab success
 
@@ -270,12 +289,25 @@ Expected validation outcome:
 ## 🛠️ Scripts
 
 - `npm run dev` – Vite development server
+![alt text](images/npm-run-dev.png)
+
 - `npm run build` – Production build
+![alt text](images/npm-run-build.png)
+
 - `npm run preview` – Preview build
+![alt text](images/npm-run-preview.png)
+
 - `npm run lint` – ESLint
+![alt text](images/REQ7_VitestSuccess-lint.png)
+
 - `npm run format` – Prettier
+![alt text](images/npm-run-format.png)
+
 - `npm test` – Vitest
+![alt text](images/REQ7_VitestSuccess-test.png)
+
 - `npm run coverage` – Vitest coverage report
+![alt text](images/REQ7_VitestSuccess-coverage.png)
 
 ---
 

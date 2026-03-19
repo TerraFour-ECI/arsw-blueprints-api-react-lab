@@ -9,8 +9,7 @@ export default defineConfig({
     setupFiles: './tests/setup.js',
   },
   coverage: {
-  reporter: ['lcov', 'text'],
-  reportsDirectory: './coverage'
-}
+    reporter: ['lcov', 'text'],
+    reportsDirectory: './coverage',
+  },
 })
-

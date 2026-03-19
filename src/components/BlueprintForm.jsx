@@ -40,7 +40,11 @@ export default function BlueprintForm({ onSubmit, isSubmitting = false }) {
       await onSubmit({ author: author.trim(), name: name.trim(), points: normalizedPoints })
       resetForm()
     } catch (e) {
-      setError(e?.message || 'Invalid points JSON.')
+      if (e instanceof SyntaxError) {
+        setError('Invalid points JSON.')
+      } else {
+        setError(e?.message || 'Invalid points JSON.')
+      }
     }
   }
 
