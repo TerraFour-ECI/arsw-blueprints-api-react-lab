@@ -3,7 +3,7 @@ import { render } from '@testing-library/react'
 import BlueprintCanvas from '../src/components/BlueprintCanvas.jsx'
 
 describe('BlueprintCanvas', () => {
-  it('renderiza un canvas y llama getContext', () => {
+  it('renders a canvas and calls getContext', () => {
     const spy = vi.spyOn(HTMLCanvasElement.prototype, 'getContext')
     const { container } = render(
       <BlueprintCanvas
