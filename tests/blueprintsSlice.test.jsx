@@ -157,14 +157,22 @@ describe('blueprints slice', () => {
     blueprintsService.update.mockResolvedValue({
       author: 'john',
       name: 'house',
-      points: [{ x: 1, y: 1 }, { x: 2, y: 2 }],
+      points: [
+        { x: 1, y: 1 },
+        { x: 2, y: 2 },
+      ],
     })
 
     await store.dispatch(
       updateBlueprint({
         author: 'john',
         name: 'house',
-        payload: { points: [{ x: 1, y: 1 }, { x: 2, y: 2 }] },
+        payload: {
+          points: [
+            { x: 1, y: 1 },
+            { x: 2, y: 2 },
+          ],
+        },
       }),
     )
 
@@ -196,7 +204,9 @@ describe('blueprints slice', () => {
       name: 'house',
       points: [{ x: 1, y: 1 }],
     })
-    await store.dispatch(createBlueprint({ author: 'john', name: 'house', points: [{ x: 1, y: 1 }] }))
+    await store.dispatch(
+      createBlueprint({ author: 'john', name: 'house', points: [{ x: 1, y: 1 }] }),
+    )
 
     blueprintsService.update.mockResolvedValue({
       author: 'john',

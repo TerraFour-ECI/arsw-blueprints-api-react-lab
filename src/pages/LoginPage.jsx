@@ -1,6 +1,39 @@
 import { useState } from 'react'
 import api from '../services/apiClient.js'
 
+const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080/api'
+
+const getAuthBaseUrl = () => {
+  if (apiBaseUrl.endsWith('/api')) {
+    return apiBaseUrl.slice(0, -4)
+  }
+  return apiBaseUrl
+}
+
+const requestLogin = async (credentials) => {
+  const authBaseUrl = getAuthBaseUrl()
+  const candidates = [
+    `${authBaseUrl}/auth/login`,
+    '/auth/login',
+  ]
+
+  let lastError = null
+  for (const endpoint of candidates) {
+    try {
+      return await api.post(endpoint, credentials)
+    } catch (e) {
+      lastError = e
+      const status = e?.response?.status
+      // Stop early for auth failures; only continue on route-not-found style issues.
+      if (status && status !== 404) {
+        throw e
+      }
+    }
+  }
+
+  throw lastError || new Error('Unable to reach auth endpoint')
+}
+
 export default function LoginPage() {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
@@ -10,8 +43,12 @@ export default function LoginPage() {
     e.preventDefault()
     setError(null)
     try {
-      const { data } = await api.post('/auth/login', { username, password })
-      localStorage.setItem('token', data.token)
+      const { data } = await requestLogin({ username, password })
+      const token = data?.access_token || data?.token
+      if (!token) {
+        throw new Error('Token missing in response')
+      }
+      localStorage.setItem('token', token)
       alert('Login successful')
     } catch (e) {
       setError('Invalid credentials or server unavailable')

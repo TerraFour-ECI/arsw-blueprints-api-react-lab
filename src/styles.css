@@ -2,7 +2,8 @@
 
 :root {
   --bg: #f6f9fc;
-  --bg-gradient: radial-gradient(circle at 0% 0%, #fce7b4 0%, #f6f9fc 42%),
+  --bg-gradient:
+    radial-gradient(circle at 0% 0%, #fce7b4 0%, #f6f9fc 42%),
     radial-gradient(circle at 100% 0%, #c8f1e8 0%, transparent 36%),
     radial-gradient(circle at 100% 100%, #d5e8ff 0%, transparent 40%);
   --surface: rgba(255, 255, 255, 0.78);

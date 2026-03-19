@@ -23,21 +23,21 @@ export default function App() {
         </nav>
       </header>
       <Routes>
-        <Route 
-          path="/" 
+        <Route
+          path="/"
           element={
             <PrivateRoute>
               <BlueprintsPage />
             </PrivateRoute>
-          } 
+          }
         />
-        <Route 
-          path="/blueprints/:author/:name" 
+        <Route
+          path="/blueprints/:author/:name"
           element={
             <PrivateRoute>
               <BlueprintDetailPage />
             </PrivateRoute>
-          } 
+          }
         />
         <Route path="/login" element={<LoginPage />} />
         <Route path="*" element={<NotFound />} />

@@ -95,7 +95,7 @@ export async function update(author, name, payload) {
   if (idx === -1) throw new Error('Blueprint not found')
   const updated = {
     ...db[idx],
-    points: normalizePoints(payload?.points || db[idx].points)
+    points: normalizePoints(payload?.points || db[idx].points),
   }
   db[idx] = updated
   return clone(updated)

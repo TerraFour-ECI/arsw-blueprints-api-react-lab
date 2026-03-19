@@ -20,7 +20,7 @@
 - Have the Blueprints backend from **Labs 3 and 4** running (APIs + security).
 - Node.js 18+ and npm.
 
-Check the key glossary specification, refer to the [Lab Definitions](./DEFINICIONES.md).
+Check the key glossary specification, refer to the [Lab Definitions](./DEFINITIONS.md).
 
 ## 📡 Expected Endpoints (adjust if your backend differs)
 
@@ -28,7 +28,7 @@ Check the key glossary specification, refer to the [Lab Definitions](./DEFINICIO
 - `GET /api/blueprints/{author}`
 - `GET /api/blueprints/{author}/{name}`
 - `POST /api/blueprints` (requires JWT)
-- `POST /api/auth/login` → `{ token }` *(Note: Setup to use /auth/login based on current Spring Boot configuration)*
+- `POST /api/auth/login` → `{ token }` _(Note: Setup to use /auth/login based on current Spring Boot configuration)_
 
 Configure the base URL in `.env`.
 
@@ -64,30 +64,31 @@ graph TD
         Redux["Redux Toolkit 🗃️<br>(Global State & Thunks)"]
         Axios["Axios Client 🌐<br>(Interceptors + JWT)"]
         Mock["apimock.js 📦<br>(In-memory data)"]
-        
+
         UI <--> Redux
         UI --> Canvas
         Redux <--> Axios
         Redux <--> Mock
     end
-    
+
     subgraph Java_Backend ["Spring Boot Backend (Port 8080/8081)"]
         API["REST API (Lab 4) 📦"]
         Sec["Spring Security/JWT (Lab 5) 🔐"]
-        
+
         API <--> Sec
     end
-    
+
     Axios -- "HTTP/JSON (VITE_USE_MOCK=false)" --> Sec
     Axios -- "HTTP/JSON (VITE_USE_MOCK=false)" --> API
 ```
 
 ## 🔗 Backend & Frontend Integration
 
-This frontend project is heavily intertwined with the existing **Java 21 Spring Boot + Security** (from previous labs). 
+This frontend project is heavily intertwined with the existing **Java 21 Spring Boot + Security** (from previous labs).
 All UI interactions mapping to creating, reading, updating, and deleting blueprints communicate directly through HTTP requests signed with JWT headers.
 
 ### Testing and Validation with cURL
+
 Before connecting the Redux slices and Axios interceptors to the frontend, manual validation of the REST API endpoints is vital to ensure robust communication structures. During development, endpoints are tested as follows:
 
 ```bash
@@ -225,14 +226,14 @@ Expected validation outcome:
 
 ## 📍 Traceability to Evaluation Criteria
 
-| Evaluation Criterion | Evidence in this repository |
-| --- | --- |
-| Functionality and case coverage (30%) | Implemented `GET/POST/PUT/DELETE`, interactive canvas point capture, protected routes, and author/blueprint queries in UI. |
-| Code quality and architecture (25%) | Clear layering (`components/`, `features/`, `pages/`, `services/`, `store/`) with Redux Toolkit thunks and service abstraction (`apiclient`/`apimock`). |
-| State management, errors, UX (15%) | Loading and error states handled in slice/UI; success/error feedback messages for create/update/delete actions. |
-| Automated tests (15%) | 81 passing tests plus coverage report (`npm run coverage`) across routing, pages, forms, canvas, route-guard, redux slice, store, service mock, API client, and app bootstrap. |
-| Security (JWT/Interceptors/Protected Routes) (10%) | JWT persisted in `localStorage`, Axios request interceptor injects Bearer token, `PrivateRoute` blocks protected views without token. |
-| CI/Lint/Format (5%) | ESLint and formatting scripts available; GitHub Actions workflow included for CI checks. |
+| Evaluation Criterion                               | Evidence in this repository                                                                                                                                                    |
+| -------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Functionality and case coverage (30%)              | Implemented `GET/POST/PUT/DELETE`, interactive canvas point capture, protected routes, and author/blueprint queries in UI.                                                     |
+| Code quality and architecture (25%)                | Clear layering (`components/`, `features/`, `pages/`, `services/`, `store/`) with Redux Toolkit thunks and service abstraction (`apiclient`/`apimock`).                        |
+| State management, errors, UX (15%)                 | Loading and error states handled in slice/UI; success/error feedback messages for create/update/delete actions.                                                                |
+| Automated tests (15%)                              | 81 passing tests plus coverage report (`npm run coverage`) across routing, pages, forms, canvas, route-guard, redux slice, store, service mock, API client, and app bootstrap. |
+| Security (JWT/Interceptors/Protected Routes) (10%) | JWT persisted in `localStorage`, Axios request interceptor injects Bearer token, `PrivateRoute` blocks protected views without token.                                          |
+| CI/Lint/Format (5%)                                | ESLint and formatting scripts available; GitHub Actions workflow included for CI checks.                                                                                       |
 
 ## 📌 Recommendations and suggested activities for lab success
 

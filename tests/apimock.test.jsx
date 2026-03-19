@@ -39,7 +39,10 @@ describe('apimock service', () => {
     })
 
     const updated = await apimock.update(created.author, created.name, {
-      points: [{ x: 1, y: 1 }, { x: 3, y: 4 }],
+      points: [
+        { x: 1, y: 1 },
+        { x: 3, y: 4 },
+      ],
     })
 
     expect(updated.points).toHaveLength(2)
