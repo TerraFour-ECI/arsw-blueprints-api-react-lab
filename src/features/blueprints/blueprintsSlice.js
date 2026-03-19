@@ -25,6 +25,22 @@ export const createBlueprint = createAsyncThunk('blueprints/createBlueprint', as
   return data
 })
 
+export const updateBlueprint = createAsyncThunk(
+  'blueprints/updateBlueprint',
+  async ({ author, name, payload }) => {
+    const data = await blueprintsService.update(author, name, payload)
+    return data
+  }
+)
+
+export const deleteBlueprint = createAsyncThunk(
+  'blueprints/deleteBlueprint',
+  async ({ author, name }) => {
+    await blueprintsService.remove(author, name)
+    return { author, name }
+  }
+)
+
 const slice = createSlice({
   name: 'blueprints',
   initialState: {
@@ -34,7 +50,14 @@ const slice = createSlice({
     status: 'idle',
     error: null,
   },
-  reducers: {},
+  reducers: {
+    addPointToCurrent(state, action) {
+      if (state.current) {
+        if (!state.current.points) state.current.points = [];
+        state.current.points.push(action.payload);
+      }
+    }
+  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchAuthors.pending, (s) => {
@@ -96,7 +119,47 @@ const slice = createSlice({
         s.status = 'failed'
         s.error = a.error.message || 'Unable to create blueprint'
       })
+      .addCase(updateBlueprint.pending, (s) => {
+        s.status = 'loading'
+        s.error = null
+      })
+      .addCase(updateBlueprint.fulfilled, (s, a) => {
+        s.status = 'succeeded'
+        const bp = a.payload
+        if (s.byAuthor[bp.author]) {
+          const idx = s.byAuthor[bp.author].findIndex((i) => i.name === bp.name)
+          if (idx !== -1) {
+            s.byAuthor[bp.author][idx] = bp
+          }
+        }
+        if (s.current && s.current.name === bp.name && s.current.author === bp.author) {
+          s.current = bp
+        }
+      })
+      .addCase(updateBlueprint.rejected, (s, a) => {
+        s.status = 'failed'
+        s.error = a.error.message || 'Unable to update blueprint'
+      })
+      .addCase(deleteBlueprint.pending, (s) => {
+        s.status = 'loading'
+        s.error = null
+      })
+      .addCase(deleteBlueprint.fulfilled, (s, a) => {
+        s.status = 'succeeded'
+        const { author, name } = a.payload
+        if (s.byAuthor[author]) {
+          s.byAuthor[author] = s.byAuthor[author].filter((bp) => bp.name !== name)
+        }
+        if (s.current && s.current.name === name && s.current.author === author) {
+          s.current = null
+        }
+      })
+      .addCase(deleteBlueprint.rejected, (s, a) => {
+        s.status = 'failed'
+        s.error = a.error.message || 'Unable to delete blueprint'
+      })
   },
 })
 
+export const { addPointToCurrent } = slice.actions
 export default slice.reducer

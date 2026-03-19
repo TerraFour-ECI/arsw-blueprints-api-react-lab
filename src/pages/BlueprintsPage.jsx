@@ -5,6 +5,9 @@ import {
   fetchAuthors,
   fetchByAuthor,
   fetchBlueprint,
+  updateBlueprint,
+  deleteBlueprint,
+  addPointToCurrent,
 } from '../features/blueprints/blueprintsSlice.js'
 import BlueprintCanvas from '../components/BlueprintCanvas.jsx'
 import BlueprintForm from '../components/BlueprintForm.jsx'
@@ -169,10 +172,46 @@ export default function BlueprintsPage() {
       </section>
 
       <section className="card">
-        <h3 style={{ marginTop: 0 }}>Current blueprint: {current?.name || '—'}</h3>
-        <BlueprintCanvas points={current?.points || []} />
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 16 }}>
+          <h3 style={{ marginTop: 0, marginBottom: 0 }}>Current blueprint: {current?.name || '—'}</h3>
+          {current && (
+            <div style={{ display: 'flex', gap: 8 }}>
+              <button 
+                className="btn primary" 
+                onClick={() => {
+                  setSubmitStatus('');
+                  dispatch(updateBlueprint({ author: current.author, name: current.name, payload: current }))
+                    .unwrap()
+                    .then(() => setSubmitStatus('Blueprint updated successfully.'))
+                    .catch(e => setSubmitStatus('Failed to update blueprint: ' + e.message));
+                }}
+              >
+                Save
+              </button>
+              <button 
+                className="btn" 
+                style={{ borderColor: '#ef4444', color: '#ef4444' }}
+                onClick={() => {
+                  setSubmitStatus('');
+                  dispatch(deleteBlueprint({ author: current.author, name: current.name }))
+                    .unwrap()
+                    .then(() => setSubmitStatus('Blueprint deleted successfully.'))
+                    .catch(e => setSubmitStatus('Failed to delete blueprint: ' + e.message));
+                }}
+              >
+                Delete
+              </button>
+            </div>
+          )}
+        </div>
+        <BlueprintCanvas 
+          points={current?.points || []} 
+          onAddPoint={current ? (pt) => dispatch(addPointToCurrent(pt)) : undefined}
+        />
         <p className="muted" style={{ marginTop: 10, marginBottom: 0 }}>
-          Select a blueprint from the table to render it on the canvas.
+          {current 
+            ? "Click on the canvas to add a new point." 
+            : "Select a blueprint from the table to render it on the canvas."}
         </p>
       </section>
       </div>
