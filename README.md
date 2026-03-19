@@ -82,6 +82,32 @@ graph TD
     Axios -- "HTTP/JSON (VITE_USE_MOCK=false)" --> API
 ```
 
+## 🔗 Backend & Frontend Integration
+
+This frontend project is heavily intertwined with the existing **Java 21 Spring Boot + Security** (from previous labs). 
+All UI interactions mapping to creating, reading, updating, and deleting blueprints communicate directly through HTTP requests signed with JWT headers.
+
+### Testing and Validation with cURL
+Before connecting the Redux slices and Axios interceptors to the frontend, manual validation of the REST API endpoints is vital to ensure robust communication structures. During development, endpoints are tested as follows:
+
+```bash
+# 1. Fetching JWT Auth Token (Running the backend on localhost:8080 or 8081)
+curl -X POST http://localhost:8081/api/auth/login \
+     -H "Content-Type: application/json" \
+     -d '{"username":"camilo", "password":"password"}'
+
+# 2. Querying the protected Blueprints endpoint using the generated Token
+curl -v http://localhost:8081/api/blueprints \
+     -H "Authorization: Bearer <ey...token...>"
+```
+
+Validating the backend output directly proves the backend operates successfully, ensuring that Axios implementations under `/src/services` accurately deserialize REST arrays into the React `useState` and `Redux` models.
+
+### API Architecture Connection
+
+- **Security Flow**: The client calls `/api/auth/login`. On success, the JWT token is persisted in `localStorage`. Automatically, an interceptor injects the `Authorization: Bearer <token>` onto all subsequent `/api/blueprints/*` calls. Use of `<PrivateRoute>` immediately restricts UI navigation depending on token presence.
+- **Dynamic Services**: Handled strictly through Factory methodologies (`blueprintsService.js`), you can gracefully swap backend environments into in-memory local testing via `.env` parameter `VITE_USE_MOCK=true`.
+
 ```text
 blueprints-react-lab/
 ├─ src/
@@ -154,13 +180,13 @@ blueprints-react-lab/
    - [x] Adds `loading/error` states per _thunk_ and displays them in the UI.
    - [x] Implements _memo selectors_ to derive the top-5 blueprints by point count.
 2. **Protected Routes**
-   - [ ] Create a `<PrivateRoute>` component and protects creation/editing.
+   - [x] Create a `<PrivateRoute>` component and protects creation/editing.
 3. **Complete CRUD**
-   - [ ] Implement `PUT /api/blueprints/{author}/{name}` and `DELETE ...` in the slice and in the UI.
+   - [x] Implement `PUT /api/blueprints/{author}/{name}` and `DELETE ...` in the slice and in the UI.
    - [x] Optimistic updates applied properly handling async payload bounds.
 4. **Interactive Drawing**
-   - [ ] Replace `svg` with a canvas where the user clicks to add points.
-   - [ ] “Save” button to send the blueprint.
+   - [x] Replace `svg` with a canvas where the user clicks to add points.
+   - [x] “Save” button to send the blueprint.
 5. **Errors and _Retry_**
    - [x] If `GET` fails, components gracefully read rejection payloads from slice safely.
 6. **Testing**
