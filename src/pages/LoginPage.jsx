@@ -14,10 +14,7 @@ const getAuthBaseUrl = () => {
 
 const requestLogin = async (credentials) => {
   const authBaseUrl = getAuthBaseUrl()
-  const candidates = [
-    `${authBaseUrl}/auth/login`,
-    '/auth/login',
-  ]
+  const candidates = [`${authBaseUrl}/auth/login`, '/auth/login']
 
   let lastError = null
   for (const endpoint of candidates) {
