@@ -89,3 +89,22 @@ export async function create(payload) {
   db.push(blueprint)
   return clone(blueprint)
 }
+export async function update(author, name, payload) {
+  await delay()
+  const idx = findIndexByKey(author, name)
+  if (idx === -1) throw new Error('Blueprint not found')
+  const updated = {
+    ...db[idx],
+    points: normalizePoints(payload?.points || db[idx].points)
+  }
+  db[idx] = updated
+  return clone(updated)
+}
+
+export async function remove(author, name) {
+  await delay()
+  const idx = findIndexByKey(author, name)
+  if (idx === -1) throw new Error('Blueprint not found')
+  db.splice(idx, 1)
+  return true
+}
