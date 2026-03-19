@@ -1,8 +1,20 @@
-import { describe, it, expect, vi } from 'vitest'
+import { beforeEach, describe, it, expect, vi } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { Provider } from 'react-redux'
 import { configureStore, createSlice } from '@reduxjs/toolkit'
 import BlueprintsPage from '../src/pages/BlueprintsPage.jsx'
+
+const { addPointMock } = vi.hoisted(() => ({
+  addPointMock: vi.fn(() => Promise.resolve({ code: 202 })),
+}))
+
+vi.mock('../src/services/blueprintsService.js', () => ({
+  isMockMode: false,
+  default: {
+    addPoint: addPointMock,
+    getByAuthorAndName: vi.fn(() => Promise.reject({ response: { status: 404 } })),
+  },
+}))
 
 // Mock action creators so the test does not require a backend
 vi.mock('../src/features/blueprints/blueprintsSlice.js', () => {
@@ -18,7 +30,6 @@ vi.mock('../src/features/blueprints/blueprintsSlice.js', () => {
     fetchAuthors: () => ({ type: 'blueprints/fetchAuthors' }),
     fetchByAuthor: (author) => ({ type: 'blueprints/fetchByAuthor', payload: author }),
     fetchBlueprint: (payload) => ({ type: 'blueprints/fetchBlueprint', payload }),
-    updateBlueprint: (payload) => makeAsyncThunkResult(payload, payload?.name === 'fail-update'),
     deleteBlueprint: (payload) => makeAsyncThunkResult(payload, payload?.name === 'fail-delete'),
     addPointToCurrent: (payload) => ({ type: 'blueprints/addPointToCurrent', payload }),
   }
@@ -41,6 +52,10 @@ function makeStore(preloaded) {
 }
 
 describe('BlueprintsPage', () => {
+  beforeEach(() => {
+    addPointMock.mockClear()
+  })
+
   it('dispatches fetchByAuthor when clicking Get blueprints', () => {
     const store = makeStore()
     const spy = vi.spyOn(store, 'dispatch')
@@ -137,12 +152,12 @@ describe('BlueprintsPage', () => {
     })
   })
 
-  it('dispatches updateBlueprint flow when clicking Save', async () => {
+  it('persists new points when clicking Save', async () => {
     const store = makeStore({
       current: {
         author: 'john',
         name: 'house',
-        points: [{ x: 1, y: 2 }],
+        points: [{ x: 1, y: 2 }, { x: 3, y: 4 }],
       },
     })
     render(
@@ -153,6 +168,7 @@ describe('BlueprintsPage', () => {
 
     fireEvent.click(screen.getAllByRole('button', { name: /^Save$/i })[1])
 
+    expect(addPointMock).toHaveBeenCalled()
     expect(await screen.findByText(/Blueprint updated successfully/i)).toBeInTheDocument()
   })
 
@@ -176,10 +192,11 @@ describe('BlueprintsPage', () => {
   })
 
   it('shows update error feedback when save fails', async () => {
+    addPointMock.mockRejectedValueOnce(new Error('save failed'))
     const store = makeStore({
       current: {
         author: 'john',
-        name: 'fail-update',
+        name: 'house',
         points: [{ x: 1, y: 2 }],
       },
     })

@@ -1,5 +1,7 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import api from '../services/apiClient.js'
+import { getToken, setSession } from '../services/auth.js'
 
 const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080/api'
 
@@ -38,6 +40,13 @@ export default function LoginPage() {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState(null)
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    if (getToken()) {
+      navigate('/', { replace: true })
+    }
+  }, [navigate])
 
   const submit = async (e) => {
     e.preventDefault()
@@ -48,8 +57,10 @@ export default function LoginPage() {
       if (!token) {
         throw new Error('Token missing in response')
       }
-      localStorage.setItem('token', token)
+      setSession(token, username)
+      window.dispatchEvent(new Event('auth-changed'))
       alert('Login successful')
+      navigate('/', { replace: true })
     } catch (e) {
       setError('Invalid credentials or server unavailable')
     }

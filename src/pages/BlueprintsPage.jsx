@@ -5,13 +5,12 @@ import {
   fetchAuthors,
   fetchByAuthor,
   fetchBlueprint,
-  updateBlueprint,
   deleteBlueprint,
   addPointToCurrent,
 } from '../features/blueprints/blueprintsSlice.js'
 import BlueprintCanvas from '../components/BlueprintCanvas.jsx'
 import BlueprintForm from '../components/BlueprintForm.jsx'
-import { isMockMode } from '../services/blueprintsService.js'
+import blueprintsService, { isMockMode } from '../services/blueprintsService.js'
 
 export default function BlueprintsPage() {
   const dispatch = useDispatch()
@@ -19,6 +18,7 @@ export default function BlueprintsPage() {
   const [authorInput, setAuthorInput] = useState('')
   const [selectedAuthor, setSelectedAuthor] = useState('')
   const [submitStatus, setSubmitStatus] = useState('')
+  const [persistedPointCount, setPersistedPointCount] = useState(0)
   const items = byAuthor[selectedAuthor] || []
 
   useEffect(() => {
@@ -41,19 +41,33 @@ export default function BlueprintsPage() {
 
   const openBlueprint = (bp) => {
     setSubmitStatus('')
+    setPersistedPointCount(bp?.points?.length || 0)
     dispatch(fetchBlueprint({ author: bp.author, name: bp.name }))
   }
 
   const createNewBlueprint = async (payload) => {
     setSubmitStatus('')
     try {
+      try {
+        await blueprintsService.getByAuthorAndName(payload.author, payload.name)
+        const duplicateMsg = `Blueprint \"${payload.name}\" for author \"${payload.author}\" already exists. Use a different name.`
+        setSubmitStatus(duplicateMsg)
+        throw new Error(duplicateMsg)
+      } catch (lookupError) {
+        if (lookupError?.response?.status && lookupError.response.status !== 404) {
+          throw lookupError
+        }
+      }
+
       const result = await dispatch(createBlueprint(payload)).unwrap()
       setSelectedAuthor(result.author)
       setAuthorInput(result.author)
+      setPersistedPointCount(result?.points?.length || 0)
       await dispatch(fetchByAuthor(result.author)).unwrap()
       setSubmitStatus('Blueprint created successfully.')
     } catch (e) {
-      setSubmitStatus(e?.message || 'Unable to create blueprint.')
+      const msg = typeof e === 'string' ? e : e?.response?.data?.message || e?.message
+      setSubmitStatus(msg || 'Unable to create blueprint.')
       throw e
     }
   }
@@ -187,18 +201,28 @@ export default function BlueprintsPage() {
               <div style={{ display: 'flex', gap: 8 }}>
                 <button
                   className="btn primary"
-                  onClick={() => {
+                  onClick={async () => {
                     setSubmitStatus('')
-                    dispatch(
-                      updateBlueprint({
-                        author: current.author,
-                        name: current.name,
-                        payload: current,
-                      }),
-                    )
-                      .unwrap()
-                      .then(() => setSubmitStatus('Blueprint updated successfully.'))
-                      .catch((e) => setSubmitStatus('Failed to update blueprint: ' + e.message))
+                    const points = Array.isArray(current.points) ? current.points : []
+                    const pendingPoints = points.slice(persistedPointCount)
+
+                    if (!pendingPoints.length) {
+                      setSubmitStatus('No new points to save.')
+                      return
+                    }
+
+                    try {
+                      for (const point of pendingPoints) {
+                        await blueprintsService.addPoint(current.author, current.name, point)
+                      }
+
+                      setPersistedPointCount(points.length)
+                      dispatch(fetchByAuthor(current.author))
+                      dispatch(fetchBlueprint({ author: current.author, name: current.name }))
+                      setSubmitStatus('Blueprint updated successfully.')
+                    } catch (e) {
+                      setSubmitStatus('Failed to update blueprint: ' + e.message)
+                    }
                   }}
                 >
                   Save

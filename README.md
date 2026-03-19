@@ -177,17 +177,17 @@ blueprints-react-lab/
 
 ## ✅ Verification Snapshot (2026-03-19)
 
-- Unit tests: `81/81` passing.
+- Unit tests: `104/104` passing.
 - Build status: `npm run build` successful.
 - Lint status: `npm run lint` clean for source/test files (coverage artifacts excluded in ESLint config).
 - Backend integration manually validated with JWT + protected endpoints via `curl`.
 
 ### Coverage Snapshot (`npm run coverage`)
 
-- Global statements: **100%**
-- Global branches: **93.51%**
-- Global functions: **100%**
-- Global lines: **100%**
+- Global statements: **99.63%**
+- Global branches: **95.81%**
+- Global functions: **97.14%**
+- Global lines: **99.63%**
 
 Branch coverage improvements requested for advanced edge cases:
 
@@ -231,7 +231,7 @@ Expected validation outcome:
 | Functionality and case coverage (30%)              | Implemented `GET/POST/PUT/DELETE`, interactive canvas point capture, protected routes, and author/blueprint queries in UI.                                                     |
 | Code quality and architecture (25%)                | Clear layering (`components/`, `features/`, `pages/`, `services/`, `store/`) with Redux Toolkit thunks and service abstraction (`apiclient`/`apimock`).                        |
 | State management, errors, UX (15%)                 | Loading and error states handled in slice/UI; success/error feedback messages for create/update/delete actions.                                                                |
-| Automated tests (15%)                              | 81 passing tests plus coverage report (`npm run coverage`) across routing, pages, forms, canvas, route-guard, redux slice, store, service mock, API client, and app bootstrap. |
+| Automated tests (15%)                              | 104 passing tests plus coverage report (`npm run coverage`) across routing, pages, forms, canvas, route-guard, redux slice, store, service mock, API client, and app bootstrap. |
 | Security (JWT/Interceptors/Protected Routes) (10%) | JWT persisted in `localStorage`, Axios request interceptor injects Bearer token, `PrivateRoute` blocks protected views without token.                                          |
 | CI/Lint/Format (5%)                                | ESLint and formatting scripts available; GitHub Actions workflow included for CI checks.                                                                                       |
 
