@@ -8,6 +8,12 @@
 ![Axios](https://img.shields.io/badge/Axios-5A29E4?style=for-the-badge&logo=axios&logoColor=white)
 ![Vitest](https://img.shields.io/badge/Vitest-FCC72C?style=for-the-badge&logo=vitest&logoColor=2E3036)
 
+## 📄 Lab Report
+
+You can open the complete React laboratory report directly here:
+
+[Open report/main.pdf](report/main.pdf)
+
 ## 🎯 Learning Objectives
 
 - Design a React SPA applying **componentization** and **Redux (reducers/slices)**.
