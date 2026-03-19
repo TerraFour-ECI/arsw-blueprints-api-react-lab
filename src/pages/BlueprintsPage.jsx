@@ -1,17 +1,21 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import {
+  createBlueprint,
   fetchAuthors,
   fetchByAuthor,
   fetchBlueprint,
 } from '../features/blueprints/blueprintsSlice.js'
 import BlueprintCanvas from '../components/BlueprintCanvas.jsx'
+import BlueprintForm from '../components/BlueprintForm.jsx'
+import { isMockMode } from '../services/blueprintsService.js'
 
 export default function BlueprintsPage() {
   const dispatch = useDispatch()
-  const { byAuthor, current, status } = useSelector((s) => s.blueprints)
+  const { authors, byAuthor, current, status, error } = useSelector((s) => s.blueprints)
   const [authorInput, setAuthorInput] = useState('')
   const [selectedAuthor, setSelectedAuthor] = useState('')
+  const [submitStatus, setSubmitStatus] = useState('')
   const items = byAuthor[selectedAuthor] || []
 
   useEffect(() => {
@@ -24,31 +28,75 @@ export default function BlueprintsPage() {
   )
 
   const getBlueprints = () => {
-    if (!authorInput) return
-    setSelectedAuthor(authorInput)
-    dispatch(fetchByAuthor(authorInput))
+    const author = authorInput.trim()
+    if (!author) return
+
+    setSubmitStatus('')
+    setSelectedAuthor(author)
+    dispatch(fetchByAuthor(author))
   }
 
   const openBlueprint = (bp) => {
+    setSubmitStatus('')
     dispatch(fetchBlueprint({ author: bp.author, name: bp.name }))
   }
 
+  const createNewBlueprint = async (payload) => {
+    setSubmitStatus('')
+    try {
+      const result = await dispatch(createBlueprint(payload)).unwrap()
+      setSelectedAuthor(result.author)
+      setAuthorInput(result.author)
+      await dispatch(fetchByAuthor(result.author)).unwrap()
+      setSubmitStatus('Blueprint created successfully.')
+    } catch (e) {
+      setSubmitStatus(e?.message || 'Unable to create blueprint.')
+      throw e
+    }
+  }
+
   return (
-    <div className="grid" style={{ gridTemplateColumns: '1.1fr 1.4fr', gap: 24 }}>
+    <div className="page-stack">
+      <section className="hero card">
+        <div>
+          <p className="hero-kicker">Lab #6 - Part 3</p>
+          <h2 style={{ marginTop: 0, marginBottom: 6 }}>Blueprint Explorer UI</h2>
+          <p className="muted" style={{ margin: 0 }}>
+            Query authors, visualize selected blueprints, and create new ones with Redux Toolkit.
+          </p>
+        </div>
+        <div className="mode-badge" aria-label="service mode badge">
+          {isMockMode ? 'Running in MOCK mode' : 'Running in API CLIENT mode'}
+        </div>
+      </section>
+
+      <div className="grid layout-2col">
       <section className="grid" style={{ gap: 16 }}>
         <div className="card">
           <h2 style={{ marginTop: 0 }}>Blueprints</h2>
-          <div style={{ display: 'flex', gap: 12 }}>
+          <div className="toolbar-row">
             <input
               className="input"
+              list="authors-list"
               placeholder="Author"
               value={authorInput}
               onChange={(e) => setAuthorInput(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') getBlueprints()
+              }}
             />
             <button className="btn primary" onClick={getBlueprints}>
               Get blueprints
             </button>
           </div>
+          {!!authors.length && (
+            <datalist id="authors-list">
+              {authors.map((author) => (
+                <option key={author} value={author} />
+              ))}
+            </datalist>
+          )}
+          {error && <p className="form-error">{error}</p>}
         </div>
 
         <div className="card">
@@ -111,12 +159,23 @@ export default function BlueprintsPage() {
           )}
           <p style={{ marginTop: 12, fontWeight: 700 }}>Total user points: {totalPoints}</p>
         </div>
+
+        <BlueprintForm onSubmit={createNewBlueprint} isSubmitting={status === 'loading'} />
+        {submitStatus && (
+          <p className={submitStatus.includes('successfully') ? 'form-success' : 'form-error'}>
+            {submitStatus}
+          </p>
+        )}
       </section>
 
       <section className="card">
         <h3 style={{ marginTop: 0 }}>Current blueprint: {current?.name || '—'}</h3>
         <BlueprintCanvas points={current?.points || []} />
+        <p className="muted" style={{ marginTop: 10, marginBottom: 0 }}>
+          Select a blueprint from the table to render it on the canvas.
+        </p>
       </section>
+      </div>
     </div>
   )
 }

@@ -7,9 +7,14 @@ import NotFound from './pages/NotFound.jsx'
 export default function App() {
   return (
     <div className="container">
-      <header>
-        <h1>ECI - Blueprints React Lab</h1>
-        <nav>
+      <header className="app-header">
+        <div>
+          <h1>ECI Blueprints Studio</h1>
+          <p className="muted" style={{ marginTop: 4, marginBottom: 0 }}>
+            React + Redux Toolkit + Canvas + JWT-ready API client
+          </p>
+        </div>
+        <nav className="main-nav">
           <NavLink to="/" end>
             Blueprints
           </NavLink>
