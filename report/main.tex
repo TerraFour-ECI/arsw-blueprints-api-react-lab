@@ -1,0 +1,622 @@
+% ╔══════════════════════════════════════════════════════════════════════════╗
+% ║  ESCUELA COLOMBIANA DE INGENIERIA JULIO GARAVITO                        ║
+% ║  Software Architecture (ARSW) — React Laboratory Report                 ║
+% ║  BluePrints Frontend SPA — React + Redux Toolkit + Axios + JWT         ║
+% ╚══════════════════════════════════════════════════════════════════════════╝
+
+\documentclass[10pt,a4paper,twocolumn]{article}
+
+% ─── Encoding & language ──────────────────────────────────────────────────────
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[english]{babel}
+
+% ─── Maths ───────────────────────────────────────────────────────────────────
+\usepackage{amsmath}
+
+% ─── Graphics & layout ───────────────────────────────────────────────────────
+\usepackage{graphicx}
+\usepackage[top=2cm, bottom=2cm, left=1.8cm, right=1.8cm]{geometry}
+\usepackage{fancyhdr}
+\usepackage{float}
+\usepackage{caption}
+\usepackage{subcaption}
+
+% ─── Code listing ────────────────────────────────────────────────────────────
+\usepackage{listings}
+
+% ─── Colors & boxes ──────────────────────────────────────────────────────────
+\usepackage[dvipsnames]{xcolor}
+\usepackage[most]{tcolorbox}
+
+% ─── Hyperlinks ──────────────────────────────────────────────────────────────
+\usepackage{hyperref}
+\usepackage{xurl}
+
+% ─── Typography helpers ───────────────────────────────────────────────────────
+\usepackage{enumitem}
+\usepackage{booktabs}
+\usepackage{titlesec}
+\usepackage[expansion=false]{microtype}
+\usepackage{parskip}
+\usepackage{array}
+\usepackage{makecell}
+
+% ═══════════════════════════════════════════════════════════════════════════════
+%  COLOUR & STYLE DEFINITIONS
+% ═══════════════════════════════════════════════════════════════════════════════
+\definecolor{darkblue}{RGB}{0,32,96}
+\definecolor{lightblue}{RGB}{173,216,230}
+\definecolor{codebg}{RGB}{245,245,245}
+\definecolor{placeholderbg}{RGB}{240,240,240}
+\definecolor{successgreen}{RGB}{40,167,69}
+\definecolor{warningorange}{RGB}{255,140,0}
+\definecolor{dangerred}{RGB}{220,53,69}
+\definecolor{darkgreen}{RGB}{20,120,70}
+
+\titleformat{\section}{\large\bfseries\color{darkblue}}{}{0em}{\thesection\quad}
+\titleformat{\subsection}{\normalsize\bfseries\color{darkblue!80}}{}{0em}{\thesubsection\quad}
+\titlespacing*{\section}{0pt}{10pt}{4pt}
+\titlespacing*{\subsection}{0pt}{8pt}{3pt}
+
+% ─── Header / Footer ─────────────────────────────────────────────────────────
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\textcolor{darkblue}{\textbf{Software Architecture}}}
+\rhead{\textcolor{darkblue}{Lab 06 -- Blueprints React UI}}
+\cfoot{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+% ─── Code Listing Styles ─────────────────────────────────────────────────────
+\lstdefinestyle{jscode}{
+    language=Java,
+    backgroundcolor=\color{codebg},
+    basicstyle=\ttfamily\scriptsize,
+    keywordstyle=\color{blue}\bfseries,
+    commentstyle=\color{gray}\itshape,
+    stringstyle=\color{Brown},
+    numberstyle=\tiny\color{gray},
+    numbers=left,
+    stepnumber=1,
+    numbersep=5pt,
+    frame=single,
+    framerule=0.4pt,
+    rulecolor=\color{gray!50},
+    breaklines=true,
+    showstringspaces=false,
+    tabsize=2,
+    captionpos=b,
+    xleftmargin=10pt,
+    xrightmargin=5pt,
+    aboveskip=6pt,
+    belowskip=6pt,
+    morekeywords={const,let,var,async,await,import,from,export,default,
+			function,return,if,else,try,catch,className,useState,
+			useEffect,useMemo,dispatch,createAsyncThunk,createSlice,
+			configureStore,navigate,Promise,throw,new}
+}
+\lstdefinestyle{bashcode}{
+    language=bash,
+    backgroundcolor=\color{codebg},
+    basicstyle=\ttfamily\scriptsize,
+    keywordstyle=\color{blue},
+    commentstyle=\color{gray}\itshape,
+    stringstyle=\color{Brown},
+    frame=single, framerule=0.4pt, rulecolor=\color{gray!50},
+    breaklines=true, showstringspaces=false, tabsize=2,
+    captionpos=b, xleftmargin=10pt, aboveskip=6pt, belowskip=6pt
+}
+
+% ─── Custom tcolorbox environments ───────────────────────────────────────────
+\tcbset{
+    conceptbox/.style={
+	  colback=blue!5!white, colframe=darkblue,
+	  coltitle=white, colbacktitle=darkblue,
+	  title={\textbf{Concept}}, fonttitle=\bfseries\small,
+	  boxrule=0.8pt, before skip=8pt, after skip=8pt,
+	  left=4pt, right=4pt, top=6pt, bottom=6pt, breakable
+    },
+    resultbox/.style={
+	  colback=green!5!white, colframe=successgreen,
+	  coltitle=white, colbacktitle=successgreen,
+	  title={\textbf{Result}}, fonttitle=\bfseries\small,
+	  boxrule=0.8pt, before skip=8pt, after skip=8pt,
+	  left=4pt, right=4pt, top=6pt, bottom=6pt, breakable
+    },
+    note/.style={
+	  colback=yellow!10!white, colframe=warningorange,
+	  coltitle=white, colbacktitle=warningorange,
+	  title={\textbf{Note}}, fonttitle=\bfseries\small,
+	  boxrule=0.8pt, before skip=8pt, after skip=8pt,
+	  left=4pt, right=4pt, top=6pt, bottom=6pt, breakable
+    },
+    warningbox/.style={
+	  colback=red!5!white, colframe=dangerred,
+	  colbacktitle=dangerred, coltitle=white,
+	  title={\textbf{Key Design Decision}}, fonttitle=\bfseries\small,
+	  boxrule=0.8pt, before skip=8pt, after skip=8pt,
+	  left=4pt, right=4pt, top=6pt, bottom=6pt, breakable
+    }
+}
+\newtcolorbox{conceptbox}[1][]{conceptbox, #1}
+\newtcolorbox{resultbox}[1][]{resultbox, #1}
+\newtcolorbox{note}[1][]{note, #1}
+\newtcolorbox{warningbox}[1][]{warningbox, #1}
+
+% ─── Image helper ─────────────────────────────────────────────────────────────
+\newcommand{\imgplaceholder}[2]{%
+    \IfFileExists{#2}{%
+	  \includegraphics[height=#1,width=\linewidth,keepaspectratio]{#2}%
+    }{%
+	  \begin{tcolorbox}[
+		colback=placeholderbg, colframe=gray!60,
+		height=#1, valign=center, halign=center,
+		fontupper=\small\ttfamily\color{gray!70},
+		boxrule=0.5pt, left=2pt, right=2pt
+	  ]
+		#2
+	  \end{tcolorbox}%
+    }%
+}
+
+\setlist[itemize]{leftmargin=15pt, itemsep=2pt, parsep=0pt, topsep=5pt}
+\setlist[enumerate]{leftmargin=15pt, itemsep=2pt, parsep=0pt, topsep=5pt}
+\captionsetup{font=small, labelfont=bf, format=hang, indention=0pt, margin=10pt}
+\hypersetup{colorlinks=true, linkcolor=darkblue, urlcolor=darkblue,
+		citecolor=darkblue, pdfborder={0 0 0}}
+\urlstyle{same}
+\setlength{\emergencystretch}{3em}
+
+% ─────────────────────────── TITLE PAGE ────────────────────────────────────
+\title{\vspace{-1cm}
+    \begin{center}
+	  \includegraphics[width=0.25\textwidth]{media/university_logo.png}
+    \end{center}
+    \vspace{1.5cm}
+    \textbf{\Large Software Architecture Laboratory}\\
+    \vspace{1cm}
+    \textbf{\huge Laboratory No. 6}\\
+    \textbf{\huge BluePrints React UI}\\
+    \vspace{1.2cm}
+    \large React 18 + Redux Toolkit + Axios + JWT + Vitest
+}
+
+\author{
+    \vspace{2cm}
+    \textbf{Students:}\\[0.05cm]
+    Andersson David Sanchez Mendez\\[0.3cm]
+    Cristian Santiago Pedraza Rodriguez\\[0.3cm]
+    Elizabeth Correa Suarez\\[0.3cm]
+    Juan Sebastian Ortega Munoz\\[1.5cm]
+    \textbf{Instructor:} Professor Javier Ivan Toquica Barrera\\[0.5cm]
+    \textbf{Course:} Software Architecture (ARSW)\\[0.3cm]
+    \textbf{Institution:} Escuela Colombiana de Ingenieria Julio Garavito\\[2cm]
+}
+
+\date{March 2026}
+
+\begin{document}
+
+\onecolumn
+\maketitle
+\thispagestyle{empty}
+\newpage
+
+\tableofcontents
+\newpage
+
+\twocolumn
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Objective}
+% ─────────────────────────────────────────────────────────────────────────────
+
+This laboratory delivers a production-oriented Single Page Application (SPA)
+for the BluePrints ecosystem, modernizing the original static client into a
+React architecture with robust state management, JWT-aware HTTP communication,
+canvas interaction, and test-driven quality controls.
+
+\begin{conceptbox}[title={Primary Learning Objectives}]
+\begin{enumerate}
+  \item Build a modular React UI with reusable components and route-based views.
+  \item Implement global state using Redux Toolkit slices and async thunks.
+  \item Integrate JWT authentication with Axios interceptors and protected routes.
+  \item Support author lookup, blueprint visualization, point editing, and persistence.
+  \item Provide service abstraction (real API vs in-memory mock) using environment flags.
+  \item Achieve high automated test confidence with Vitest + Testing Library.
+\end{enumerate}
+\end{conceptbox}
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Technology Stack and Project Structure}
+% ─────────────────────────────────────────────────────────────────────────────
+
+\subsection{Stack Overview}
+
+\begin{center}
+\small
+\begin{tabular}{@{}p{2.2cm}p{4.3cm}@{}}
+\toprule
+\textbf{Technology} & \textbf{Role in the Solution} \\
+\midrule
+React 18 & Component-based SPA rendering \\
+React Router 6 & Navigation and route guards \\
+Redux Toolkit & Global state and async API orchestration \\
+Axios & HTTP client with JWT interceptor \\
+Vite & Development/build tooling \\
+Vitest + Testing Library & Unit/component testing \\
+ESLint + Prettier & Code quality and formatting \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsection{Directory Layout}
+
+\begin{lstlisting}[style=bashcode, caption={Frontend repository structure (simplified)}]
+src/
+  components/   # BlueprintCanvas, BlueprintForm, BlueprintList, PrivateRoute
+  features/     # Redux slice: blueprintsSlice.js
+  pages/        # BlueprintsPage, LoginPage, ProfilePage, ChangePasswordPage
+  services/     # apiClient, blueprintsService, apimock, auth helpers
+  store/        # Redux store configuration
+  App.jsx
+tests/          # 21 test files + setup.js
+images/         # Laboratory evidence screenshots
+report/         # This LaTeX report
+\end{lstlisting}
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Architecture and Data Flow}
+% ─────────────────────────────────────────────────────────────────────────────
+
+\subsection{Frontend Architecture}
+
+The application adopts a layered frontend architecture:
+
+\begin{enumerate}
+  \item \textbf{Presentation Layer:} Pages and reusable components.
+  \item \textbf{State Layer:} Redux slice with async thunks and reducers.
+  \item \textbf{Service Layer:} API adapter that normalizes backend response envelopes.
+  \item \textbf{Transport Layer:} Axios instance with JWT injection and auth handling.
+\end{enumerate}
+
+\begin{warningbox}
+The backend security API returns envelope payloads
+(for example \texttt{\{code, message, data\}}). The frontend service
+normalizes these responses before they reach Redux. This decision avoids
+duplicating response-shape checks in components and reducers.
+\end{warningbox}
+
+\subsection{JWT Authentication Flow}
+
+\begin{enumerate}
+  \item User signs in at \texttt{/login}.
+  \item UI posts credentials to \texttt{/auth/login}.
+  \item \texttt{access\_token} is stored in \texttt{localStorage}.
+  \item Axios interceptor appends \texttt{Authorization: Bearer <token>}.
+  \item Protected routes become accessible through \texttt{PrivateRoute}.
+\end{enumerate}
+
+\begin{lstlisting}[style=jscode, caption={Axios interceptor strategy (simplified)}]
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem('token')
+  if (token) config.headers.Authorization = `Bearer ${token}`
+  return config
+})
+\end{lstlisting}
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Functional Requirements Implementation}
+% ─────────────────────────────────────────────────────────────────────────────
+
+\subsection{Requirement 1: Canvas Rendering and Interaction}
+
+The \texttt{BlueprintCanvas} component renders blueprint points and polylines,
+applies viewport scaling, and supports click-to-add-point interaction for the
+currently opened blueprint.
+
+\begin{figure}[H]
+\centering
+\imgplaceholder{4.1cm}{../images/REQ1_CanvasDraw.png}
+\caption{Canvas rendering for blueprint visualization}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\imgplaceholder{4.1cm}{../images/REQ1_CanvasDraw-SuccessfulLogin.png}
+\caption{Canvas available after successful authentication}
+\end{figure}
+
+\subsection{Requirement 2: Author-Based Blueprint Listing}
+
+Users query an author and receive a table with blueprint names, point counts,
+and an Open action to load blueprint details.
+
+\begin{figure}[H]
+\centering
+\imgplaceholder{4.1cm}{../images/REQ2_AuthorBlueprintsTable.png}
+\caption{Author query and blueprints table}
+\end{figure}
+
+\subsection{Requirement 3: Open Blueprint and Update Canvas}
+
+Selecting Open synchronizes Redux \texttt{current} blueprint and redraws the
+canvas immediately.
+
+\begin{figure}[H]
+\centering
+\imgplaceholder{4.1cm}{../images/REQ3_CanvasUpdate.png}
+\caption{UI state and canvas synchronized after selecting a blueprint}
+\end{figure}
+
+\subsection{Requirement 4: Service Switching (Mock/API)}
+
+The system supports a runtime switch controlled by
+\texttt{VITE\_USE\_MOCK}. Both service implementations expose the same interface.
+
+\begin{lstlisting}[style=jscode, caption={Service selector pattern (conceptual)}]
+const useMock = String(import.meta.env.VITE_USE_MOCK).toLowerCase() === 'true'
+const service = useMock ? apimock : apiclient
+export default service
+\end{lstlisting}
+
+\begin{figure}[H]
+\centering
+\imgplaceholder{4.1cm}{../images/REQ4_ApiMockSwitch.png}
+\caption{Evidence of environment-driven service switching}
+\end{figure}
+
+\subsection{Requirement 5: Redux-Driven UI State}
+
+The page displays current blueprint metadata and aggregated points using
+\texttt{useSelector} and memoized derivations.
+
+\begin{figure}[H]
+\centering
+\imgplaceholder{4.1cm}{../images/REQ5_ReduxUIState.png}
+\caption{Redux-managed state reflected in the UI}
+\end{figure}
+
+\subsection{Requirement 6: UI/UX Styling}
+
+The interface uses custom styling (cards, gradients, spacing, responsive grid,
+state color semantics) and includes profile/password management views.
+
+\begin{figure}[H]
+\centering
+\imgplaceholder{4.1cm}{../images/REQ6_ColorfulUI.png}
+\caption{Main colorful dashboard design}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\imgplaceholder{4.1cm}{../images/REQ6_ColorfulUI-profile.png}
+\caption{Profile page styling and interaction}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\imgplaceholder{4.1cm}{../images/REQ6_ColorfulUI-passwd.png}
+\caption{Change password page styling and interaction}
+\end{figure}
+
+\subsection{Requirement 7: Testing and Quality}
+
+The project includes reducer tests, component tests, routing tests, service
+tests, auth utility tests, and integration-like UI flow tests.
+
+\begin{figure}[H]
+\centering
+\imgplaceholder{4.1cm}{../images/REQ7_VitestSuccess-test.png}
+\caption{Vitest execution evidence}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\imgplaceholder{4.1cm}{../images/REQ7_VitestSuccess-lint.png}
+\caption{ESLint validation evidence}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\imgplaceholder{4.1cm}{../images/REQ7_VitestSuccess-coverage.png}
+\caption{Coverage execution evidence}
+\end{figure}
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Blueprint Create/Update Reliability Improvements}
+% ─────────────────────────────────────────────────────────────────────────────
+
+During integration against the secured Java backend, key reliability fixes were
+implemented to align frontend write operations with the backend contract.
+
+\begin{resultbox}[title={Implemented Stability Fixes}]
+\begin{itemize}
+  \item Added response-envelope unwrapping in service layer to support
+	  \texttt{\{code, message, data\}} and \texttt{\{status, message, data\}}.
+  \item Updated save flow to persist only newly created points through the
+	  backend endpoint \texttt{/blueprints/\{author\}/\{name\}/points}.
+  \item Added duplicate prevention and clearer conflict feedback for blueprint creation.
+  \item Added defensive point JSON parsing/normalization in creation form.
+  \item Expanded regression tests for service and page-level create/save flows.
+\end{itemize}
+\end{resultbox}
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Build, Scripts, and Tooling}
+% ─────────────────────────────────────────────────────────────────────────────
+
+\subsection{NPM Commands}
+
+\begin{center}
+\small
+\begin{tabular}{@{}ll@{}}
+\toprule
+\textbf{Script} & \textbf{Purpose} \\
+\midrule
+\texttt{npm run dev} & Starts Vite development server \\
+\texttt{npm run build} & Produces production bundle \\
+\texttt{npm run preview} & Runs preview server for built bundle \\
+\texttt{npm run lint} & Runs ESLint checks \\
+\texttt{npm run format} & Applies Prettier formatting \\
+\texttt{npm test} & Executes Vitest in run mode \\
+\texttt{npm run coverage} & Generates test coverage report \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{figure}[H]
+\centering
+\imgplaceholder{3.9cm}{../images/npm-run-dev.png}
+\caption{Development server execution}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\imgplaceholder{3.9cm}{../images/npm-run-build.png}
+\caption{Production build execution}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\imgplaceholder{3.9cm}{../images/npm-run-preview.png}
+\caption{Preview execution}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\imgplaceholder{3.9cm}{../images/npm-run-format.png}
+\caption{Formatting workflow}
+\end{figure}
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Quality Metrics}
+% ─────────────────────────────────────────────────────────────────────────────
+
+\begin{center}
+\small
+\begin{tabular}{@{}ll@{}}
+\toprule
+\textbf{Metric} & \textbf{Observed Value} \\
+\midrule
+Passing tests & 105 / 105 \\
+Statements coverage & 99.63\% \\
+Branches coverage & 95.81\% \\
+Functions coverage & 97.14\% \\
+Lines coverage & 99.63\% \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{resultbox}[title={Verification Snapshot}]
+\begin{itemize}
+  \item Unit and integration-style frontend tests pass successfully.
+  \item Lint and build pipelines execute without blocking errors.
+  \item JWT auth flow is validated in UI and backend-integrated paths.
+  \item Mock/API parity is preserved through shared service contracts.
+\end{itemize}
+\end{resultbox}
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Synthesis of Recommended Readings}
+% ─────────────────────────────────────────────────────────────────────────────
+
+This section summarizes actionable lessons extracted from the requested
+references and their direct application in this project.
+
+\subsection{React Best Practices (freeCodeCamp)}
+
+\begin{itemize}
+  \item Keep components focused and reusable.
+  \item Organize by feature and concern, not by file extension only.
+  \item Treat side effects explicitly and isolate API calls in dedicated layers.
+  \item Avoid ad-hoc global mutable state.
+\end{itemize}
+
+\textbf{Applied in this lab:} separate folders for components/pages/services,
+clear route boundaries, isolated API service modules, and reusable UI blocks.
+
+\subsection{State Management in React (freeCodeCamp + Redux Toolkit article)}
+
+\begin{itemize}
+  \item Escalate from local state to centralized state only when needed.
+  \item Use predictable reducers and immutable updates.
+  \item Use async abstraction patterns for network-dependent transitions.
+\end{itemize}
+
+\textbf{Applied in this lab:} \texttt{createSlice} + \texttt{createAsyncThunk},
+single source of truth for blueprint state, and structured loading/error flows.
+
+\subsection{Axios Interceptors Documentation}
+
+\begin{itemize}
+  \item Interceptors are ideal for cross-cutting concerns (auth headers,
+	  centralized response handling).
+  \item Keep auth token injection close to transport concerns.
+\end{itemize}
+
+\textbf{Applied in this lab:} request interceptor appends Bearer JWT globally;
+response interceptor handles invalid-session scenarios.
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Conclusions}
+% ─────────────────────────────────────────────────────────────────────────────
+
+\begin{resultbox}[title={Key Findings}]
+\begin{enumerate}
+  \item The migration from a static client to a React SPA significantly improves
+	  maintainability, traceability, and extensibility.
+  \item Redux Toolkit provides a balanced state model for medium-size frontend
+	  systems where asynchronous workflows dominate.
+  \item Service abstraction plus response normalization is critical when backend
+	  response contracts evolve during iterative labs.
+  \item JWT integration with Axios interceptors and protected routes creates a
+	  clean and scalable authentication boundary in the UI.
+  \item High automated test coverage helped detect regressions early while
+	  implementing advanced requirements and UX refinements.
+\end{enumerate}
+\end{resultbox}
+
+\begin{note}
+Future extension opportunities include RTK Query migration for request caching,
+MSW-based network simulation for deterministic test isolation, and CI pipelines
+that publish coverage artifacts for each pull request.
+\end{note}
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{References}
+% ─────────────────────────────────────────────────────────────────────────────
+
+\begin{enumerate}
+  \item freeCodeCamp. Best Practices for React.
+	  \url{https://www.freecodecamp.org/news/best-practices-for-react/}
+
+  \item freeCodeCamp. How to Manage State in a React App.
+	  \url{https://www.freecodecamp.org/news/how-to-manage-state-in-a-react-app/}
+
+  \item Axios Documentation. Interceptors.
+	  \url{https://axios-http.com/docs/interceptors}
+
+  \item Aysu Nita. Mastering State Management in React with Redux and Redux Toolkit.
+	  \url{https://medium.com/@aysunitai/mastering-state-management-in-react-with-redux-and-redux-toolkit-d8e6f09d5393}
+
+  \item React Documentation.
+	  \url{https://react.dev/}
+
+  \item Redux Toolkit Documentation.
+	  \url{https://redux-toolkit.js.org/}
+
+  \item React Router Documentation.
+	  \url{https://reactrouter.com/}
+
+  \item Vitest Documentation.
+	  \url{https://vitest.dev/}
+
+  \item Testing Library Documentation.
+	  \url{https://testing-library.com/docs/}
+
+  \item Vite Documentation.
+	  \url{https://vitejs.dev/}
+\end{enumerate}
+
+\end{document}
