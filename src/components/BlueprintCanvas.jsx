@@ -62,8 +62,8 @@ export default function BlueprintCanvas({ points = [], width = 520, height = 360
     }
 
     const mapPoint = (point) => ({
-      x: hasValidBounds ? 24 + (point.x - transformRef.current.minX) * scale : point.x,
-      y: hasValidBounds ? 24 + (point.y - transformRef.current.minY) * scale : point.y,
+      x: 24 + (point.x - transformRef.current.minX) * scale,
+      y: 24 + (point.y - transformRef.current.minY) * scale,
     })
 
     if (normalized.length > 1) {

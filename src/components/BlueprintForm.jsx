@@ -7,6 +7,7 @@ export default function BlueprintForm({ onSubmit, isSubmitting = false }) {
   const [error, setError] = useState('')
 
   const resetForm = () => {
+    setAuthor('')
     setName('')
     setPointsJSON('[{"x":10,"y":10},{"x":40,"y":60}]')
   }

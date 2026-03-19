@@ -4,7 +4,7 @@ import pluginReact from 'eslint-plugin-react'
 
 export default [
   // Ignore build and dependency folders
-  { ignores: ['dist/**', 'build/**', 'node_modules/**'] },
+  { ignores: ['dist/**', 'build/**', 'coverage/**', 'node_modules/**'] },
 
   // Rules for app source code
   {
