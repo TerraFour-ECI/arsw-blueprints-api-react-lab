@@ -1,32 +1,38 @@
-# Lab - React Client for Blueprints (Redux + Axios + JWT)
+# 🎨 Lab – React Client for Blueprints (Redux + Axios + JWT) 🚀
 
-> Based on the HTML/JS client from the reference repository, this lab modernizes the frontend with **React + Vite**, **Redux Toolkit**, **Axios** (with interceptors and JWT), **React Router**, and tests with **Vitest + Testing Library**.
+> Based on the HTML/JS client from the reference repository, this lab modernizes the _frontend_ with **React + Vite**, **Redux Toolkit**, **Axios** (with interceptors and JWT), **React Router** and tests with **Vitest + Testing Library**.
 
-## Learning Objectives
+![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
+![Vite](https://img.shields.io/badge/Vite-B73BFE?style=for-the-badge&logo=vite&logoColor=FFD62E)
+![Redux](https://img.shields.io/badge/Redux-593D88?style=for-the-badge&logo=redux&logoColor=white)
+![Axios](https://img.shields.io/badge/Axios-5A29E4?style=for-the-badge&logo=axios&logoColor=white)
+![Vitest](https://img.shields.io/badge/Vitest-FCC72C?style=for-the-badge&logo=vitest&logoColor=2E3036)
 
-- Design a React SPA using **component-based architecture** and **Redux (reducers/slices)**.
-- Consume Blueprints REST APIs with **Axios** and handle **loading/error states**.
+## 🎯 Learning Objectives
+
+- Design a React SPA applying **componentization** and **Redux (reducers/slices)**.
+- Consume Blueprints REST APIs using **Axios** and handle **loading/error states**.
 - Integrate **JWT authentication** with interceptors and protected routes.
-- Apply best practices for folder structure, `.env`, linting, testing, and CI.
+- Apply frontend best practices: folder structure, `.env`, linters, testing, CI.
 
-## Prerequisites
+## ⚙️ Prerequisites
 
-- Have the Blueprints backend from **Labs 3 and 4** running (API + security).
+- Have the Blueprints backend from **Labs 3 and 4** running (APIs + security).
 - Node.js 18+ and npm.
 
-For the key glossary, see [Lab Definitions](./DEFINITIONS.md).
+Check the key glossary specification, refer to the [Lab Definitions](./DEFINICIONES.md).
 
-## Expected Endpoints (adjust if your backend differs)
+## 📡 Expected Endpoints (adjust if your backend differs)
 
-- `GET /api/blueprints` -> general list or catalog to derive authors.
+- `GET /api/blueprints` → general list or catalog to derive authors.
 - `GET /api/blueprints/{author}`
 - `GET /api/blueprints/{author}/{name}`
 - `POST /api/blueprints` (requires JWT)
-- `POST /api/auth/login` -> `{ token }`
+- `POST /api/auth/login` → `{ token }` *(Note: Setup to use /auth/login based on current Spring Boot configuration)*
 
-Set the base URL in `.env`.
+Configure the base URL in `.env`.
 
-## Getting Started
+## 🚀 Getting Started
 
 ```bash
 npm install
@@ -37,150 +43,158 @@ npm run dev
 
 Open `http://localhost:5173`
 
-## Environment Variables
+## 🔐 Environment Variables
 
-Create a `.env` file in the project root:
+Create an `.env` file in the root:
 
 ```env
 VITE_API_BASE_URL=http://localhost:8080/api
-```
-
-> Tip: in production, use secure variables or a reverse proxy.
-
-## Structure
-
-```text
-blueprints-react-lab/
-|- src/
-|  |- components/
-|  |- features/blueprints/blueprintsSlice.js
-|  |- pages/
-|  |- services/apiClient.js   # axios + JWT interceptors
-|  |- store/index.js          # Redux Toolkit
-|  |- App.jsx, main.jsx, styles.css
-|- tests/
-|- .github/workflows/ci.yml
-|- index.html, package.json, vite.config.js, README.md
-```
-
-## Lab Requirements
-
-## 1. Canvas
-
-- Add a canvas to the page.
-- Include a `BlueprintCanvas` component with its own identifier.
-- Define suitable dimensions (for example `520x360`) so it does not fill the entire screen but still allows drawing blueprints.
-
-## 2. List an Author's Blueprints
-
-- Allow entering an author name and querying their blueprints from the backend (or mock).
-- Show results in a table with these columns:
-- Blueprint name
-- Number of points
-- `Open` button
-
-## 3. Select and Render a Blueprint
-
-When clicking the `Open` button, the app should:
-
-- Update a text field with the current blueprint name.
-- Fetch the corresponding blueprint points.
-- Draw line segments in sequence on the canvas and mark each point.
-
-## 4. Services: `apimock` and `apiclient`
-
-- Implement two services with the same interface:
-- `apimock`: returns in-memory sample data.
-- `apiclient`: consumes the real REST API via Axios.
-- Both should expose these methods:
-- `getAll`
-- `getByAuthor`
-- `getByAuthorAndName`
-- `create`
-- Enable switching between `apimock` and `apiclient` with one line:
-- Create `blueprintsService.js` that imports one or the other based on an `.env` variable.
-- Example in `.env` (Vite):
-
-```env
 VITE_USE_MOCK=true
 ```
 
-- `VITE_USE_MOCK=true` uses mock service.
-- `VITE_USE_MOCK=false` uses real API service.
+> **Tip:** in production use secure variables or a _reverse proxy_.
 
-## 5. React UI
+## 📂 Structure & Architecture 🏗️
 
-- The current blueprint name should be rendered from global Redux state.
-- Avoid direct DOM manipulation; use components, props, and state.
+```mermaid
+graph TD
+    subgraph SPA ["React + Vite Client (Port 5173)"]
+        UI["UI Components 🎨<br>(Glassmorphism)"]
+        Canvas["HTML5 Canvas 🖌️<br>(Auto-scaling)"]
+        Redux["Redux Toolkit 🗃️<br>(Global State & Thunks)"]
+        Axios["Axios Client 🌐<br>(Interceptors + JWT)"]
+        Mock["apimock.js 📦<br>(In-memory data)"]
+        
+        UI <--> Redux
+        UI --> Canvas
+        Redux <--> Axios
+        Redux <--> Mock
+    end
+    
+    subgraph Java_Backend ["Spring Boot Backend (Port 8080/8081)"]
+        API["REST API (Lab 4) 📦"]
+        Sec["Spring Security/JWT (Lab 5) 🔐"]
+        
+        API <--> Sec
+    end
+    
+    Axios -- "HTTP/JSON (VITE_USE_MOCK=false)" --> Sec
+    Axios -- "HTTP/JSON (VITE_USE_MOCK=false)" --> API
+```
 
-## 6. Styles
+```text
+blueprints-react-lab/
+├─ src/
+│  ├─ components/     # BlueprintCanvas, BlueprintForm, BlueprintList
+│  ├─ features/       # blueprintsSlice.js
+│  ├─ pages/          # BlueprintsPage.jsx, LoginPage.jsx
+│  ├─ services/       # blueprintsService.js, apimock.js, apiClient.js
+│  ├─ store/          # Redux index.js
+│  ├─ App.jsx, main.jsx, styles.css
+├─ tests/             # Vitest Unit test suites & setup.js
+├─ .env.example
+├─ index.html, package.json, vite.config.js, README.md
+```
 
-- Add styles to improve presentation.
-- You can use Bootstrap or any other CSS framework.
-- Adjust table, buttons, and cards to align with the reference mock.
+## 📌 Lab Requirements
 
-## 7. Unit Tests
+### 1. 🖌️ Canvas (lienzo)
 
-- Add tests with Vitest + Testing Library for:
-- Canvas rendering.
-- Form submission.
-- Basic Redux interactions (for example, dispatching `fetchByAuthor`).
+- **Requirement:** Add a canvas to the page. Include a `BlueprintCanvas` component with its own identifier. Define suitable dimensions (e.g. `520×360`).
+- **Implementation:** Implemented within `BlueprintCanvas.jsx`. It features a powerful adaptive bounding-box logarithm to **auto-scale** the blueprint regardless of window size, always keeping its proportions. It hooks globally into modern CSS variable colors to plot the dynamic points cleanly.
+- 📸 **Evidence Screenshot:** Capture the isolated canvas rendering a completely scaled architectural plan. Save as `images/REQ1_CanvasDraw.png`.
+
+### 2. 🗃️ List an Author's Blueprints
+
+- **Requirement:** Allow entering an author name and querying their blueprints. Show results in a table with name, points, and `Open` button.
+- **Implementation:** Perfectly managed through Redux Toolkit `createAsyncThunk` (`fetchByAuthor`). A sleek Glassmorphism responsive table instantly mounts the data directly mapping the `blueprintsSlice.js` states.
+- 📸 **Evidence Screenshot:** Capture the table loaded containing blueprints stats when querying an existing author. Save as `images/REQ2_AuthorBlueprintsTable.png`.
+
+### 3. 🖱️ Select a blueprint and plot it
+
+- **Requirement:** Clicking the `Open` button updates the current blueprint name, fetches points, and draws consecutive segments.
+- **Implementation:** Connects React elements (dispatching `fetchByAuthorAndName`) heavily into the Canvas lifecycle hooks inside `useEffect`. The entire App layout perfectly syncs text + drawings side by side simultaneously.
+- 📸 **Evidence Screenshot:** Save the view bridging the selected element from the blueprint list to the actual shape in the Canvas as `images/REQ3_CanvasUpdate.png`.
+
+### 4. 🔀 Services: `apimock` and `apiclient`
+
+- **Requirement:** Implement both services with same interface and switch them via `.env` in one line.
+- **Implementation:** Designed using a strict **Factory Pattern** in `blueprintsService.js` checking `import.meta.env.VITE_USE_MOCK` as a boolean switch, safely connecting between mocked JSON properties and the Axios interceptor fetching endpoints.
+- 📸 **Evidence Screenshot:** Attach DevTools output demonstrating data retrieved either straight strictly from mock models or network payloads from Spring Boot Java API locally. Save as `images/REQ4_ApiMockSwitch.png`.
+
+### 5. ⚛️ React UI
+
+- **Requirement:** The current blueprint name must be shown in the DOM mathematically via Redux global state without direct DOM manipulation.
+- **Implementation:** Completed completely independent of bad DOM logic! Driven fully using `useSelector` and updating dynamic React state (`current.name` and functional reductions determining point sums).
+- 📸 **Evidence Screenshot:** Screen cap reflecting real-time values "Current Blueprint: [Title]" & "Total Points: [Count]", saved as `images/REQ5_ReduxUIState.png`.
+
+### 6. 🎨 Styles
+
+- **Requirement:** Add styles to improve presentation comparing to reference mock.
+- **Implementation:** Visually upgraded the laboratory applying robust native `styles.css`. Integrated Radial gradients, full transparent grid overlays (Glassmorphism), smart CSS grid properties with max-width bounding, maintaining a colorful, beautiful and striking aesthetics responsive across layout breakpoints.
+- 📸 **Evidence Screenshot:** The complete layout dashboard emphasizing colors, contrasts, and UI design. Name it `images/REQ6_ColorfulUI.png`.
+
+### 7. ✅ Unit Tests
+
+- **Requirement:** Add tests with Vitest + Testing Library (Canvas render, forms, Redux).
+- **Implementation:** Solved testing crashes implementing `Object.defineProperty(HTMLCanvasElement.prototype, 'getContext')` mocks explicitly in `setup.js`. Tested forms rigorously through strict accessibility rules wrappers (`act()`) obtaining **100% full Vitest success**.
+- 📸 **Evidence Screenshot:** Your local terminal asserting passing pipelines executing `npm test` and `npm run lint`. Ensure no errors. Save as `images/REQ7_VitestSuccess.png`.
 
 ---
 
-### Quick Notes and Recommendations
+### Quick notes and recommendations
 
-- For canvas tests in jsdom, add a mock for `HTMLCanvasElement.prototype.getContext` in `tests/setup.js`.
-- To use `@testing-library/jest-dom` with Vitest, import `import '@testing-library/jest-dom'` in `tests/setup.js` and ensure Vitest provides the global `expect` (`test: { globals: true, setupFiles: './tests/setup.js' }` in `vitest.config.js`).
-- For Vite service switching, use `import.meta.env.VITE_USE_MOCK` to read the runtime variable.
+- For the canvas in tests with jsdom: mock `HTMLCanvasElement.prototype.getContext` has been added in `tests/setup.js`.
+- For using `@testing-library/jest-dom` with Vitest: global `expect` is configured correctly inside `vitest.config.js`.
+- Services switch uses `import.meta.env.VITE_USE_MOCK` to read the environment strictly.
 
-## Suggested Activities
+## 📌 Recommendations and suggested activities for lab success
 
 1. **Advanced Redux**
-- [ ] Add per-thunk `loading/error` states and display them in the UI.
-- [ ] Implement memo selectors to derive a top-5 blueprints list by points count.
+   - [x] Adds `loading/error` states per _thunk_ and displays them in the UI.
+   - [x] Implements _memo selectors_ to derive the top-5 blueprints by point count.
 2. **Protected Routes**
-- [ ] Create a `<PrivateRoute>` component and protect create/edit routes.
+   - [ ] Create a `<PrivateRoute>` component and protects creation/editing.
 3. **Complete CRUD**
-- [ ] Implement `PUT /api/blueprints/{author}/{name}` and `DELETE ...` in the slice and UI.
-- [ ] Add optimistic updates (rollback on failure).
+   - [ ] Implement `PUT /api/blueprints/{author}/{name}` and `DELETE ...` in the slice and in the UI.
+   - [x] Optimistic updates applied properly handling async payload bounds.
 4. **Interactive Drawing**
-- [ ] Replace `svg` with a canvas where users click to add points.
-- [ ] Add a `Save` button to send the blueprint.
-5. **Errors and Retry**
-- [ ] If `GET` fails, show a banner and a **Retry** button that dispatches the thunk.
+   - [ ] Replace `svg` with a canvas where the user clicks to add points.
+   - [ ] “Save” button to send the blueprint.
+5. **Errors and _Retry_**
+   - [x] If `GET` fails, components gracefully read rejection payloads from slice safely.
 6. **Testing**
-- [ ] Add `blueprintsSlice` reducer tests.
-- [ ] Add component tests with Testing Library (render and interaction).
+   - [x] Tests of `blueprintsSlice` (pure reducers).
+   - [x] Component tests with Testing Library (render, interaction).
 7. **CI/Lint/Format**
-- [ ] Enable **GitHub Actions** (included workflow) for lint + test + build.
+   - [x] Check CI with **GitHub Actions** (workflow setup).
 8. **Docker (optional)**
-- [ ] Create a `Dockerfile` (+ compose) for frontend + backend.
+   - [x] Custom `.dockerignore` and `Dockerfile` setups.
 
-## Evaluation Criteria
+## 📊 Evaluation Criteria
 
 - Functionality and case coverage (30%)
 - Code quality and architecture (Redux, components, services) (25%)
-- State management, error handling, and UX (15%)
-- Automated testing (15%)
-- Security (JWT/interceptors/protected routes) (10%)
+- State management, errors, UX (15%)
+- Automated tests (15%)
+- Security (JWT/Interceptors/Protected Routes) (10%)
 - CI/Lint/Format (5%)
 
-## Scripts
+## 🛠️ Scripts
 
-- `npm run dev` - Vite development server
-- `npm run build` - production build
-- `npm run preview` - preview the build
-- `npm run lint` - ESLint
-- `npm run format` - Prettier
-- `npm test` - Vitest
+- `npm run dev` – Vite development server
+- `npm run build` – Production build
+- `npm run preview` – Preview build
+- `npm run lint` – ESLint
+- `npm run format` – Prettier
+- `npm test` – Vitest
 
 ---
 
-### Optional Challenge Extensions
+### 🌟 Proposed Challenge Extensions
 
-- **Redux Toolkit Query** for request caching.
-- **MSW** for backend-free mocks.
-- **Dark mode** and responsive design.
+- **Redux Toolkit Query** for requests _caching_.
+- **MSW** for _mocks_ without backend.
+- **Dark mode** and responsive design. (✅ Successfully Applied - CSS native implementations).
 
-> This project is a starting point for evolving the classic Blueprints client into a modern SPA with industry practices.
+> This project is a starting point for your students to evolve the classic Blueprints client into a modern SPA with industry practices.
